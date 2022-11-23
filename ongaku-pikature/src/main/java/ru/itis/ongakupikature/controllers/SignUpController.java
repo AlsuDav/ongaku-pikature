@@ -1,6 +1,6 @@
 package ru.itis.ongakupikature.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,9 +9,9 @@ import ru.itis.ongakupikature.dto.SignUpDto;
 import ru.itis.ongakupikature.service.SignUpService;
 
 @Controller
+@RequiredArgsConstructor
 public class SignUpController {
-    @Autowired
-    private SignUpService service;
+    private final SignUpService service;
 
     @GetMapping("/signUp")
     public String getSignUpPage() {
@@ -30,6 +30,4 @@ public class SignUpController {
         service.signUp(form);
         return "ok";
     }
-
-
 }

@@ -1,7 +1,7 @@
 package ru.itis.ongakupikature.service;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.itis.ongakupikature.dto.SignUpDto;
@@ -11,13 +11,12 @@ import ru.itis.ongakupikature.repository.UsersRepository;
 import java.time.LocalDate;
 
 @Service
-public class SignUpServiceImpl implements SignUpService{
+@RequiredArgsConstructor
+public class SignUpServiceImpl implements SignUpService {
 
-    @Autowired
-    private UsersRepository usersRepository;
+    private final UsersRepository usersRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void signUp(SignUpDto form) {
