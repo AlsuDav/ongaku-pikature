@@ -9,9 +9,6 @@ import java.io.InputStream;
 public record UploadParams(
 
         @NonNull InputStream fileInputStream,
-
-        String fileName,
-
-        String userName
+        String fileName
 ) {
 }

@@ -1,6 +1,7 @@
 package ru.itis.ongakupikature.filestorage;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import ru.itis.ongakupikature.filestorage.dto.FileUuid;
 import ru.itis.ongakupikature.filestorage.dto.LoadResult;
 import ru.itis.ongakupikature.filestorage.dto.ReadResult;
@@ -12,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 @Slf4j
+@Component
 public class LocalFileStorage implements FileStorage {
 
     private static final String FOLDER = System.getProperty("java.io.tmpdir") + File.separator;
@@ -35,7 +37,7 @@ public class LocalFileStorage implements FileStorage {
             Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
             return new LoadResult.Success(new FileUuid(file.getName(), FOLDER));
         } catch (IOException e) {
-            log.warn("File not loaded. Filename: {}, username: {}", uploadParams.fileName(), uploadParams.userName(), e);
+            log.warn("File not loaded. Filename: {}", uploadParams.fileName(), e);
             return new LoadResult.Failed.FileNotLoaded(e.getMessage());
         }
     }
