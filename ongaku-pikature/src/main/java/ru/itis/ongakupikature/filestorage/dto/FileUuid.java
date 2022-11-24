@@ -1,4 +1,4 @@
 package ru.itis.ongakupikature.filestorage.dto;
 
-public record FileUuid(String uuid) {
+public record FileUuid(String uuid, String path) {
 }

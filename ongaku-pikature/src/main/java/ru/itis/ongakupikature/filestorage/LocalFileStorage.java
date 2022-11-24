@@ -33,7 +33,7 @@ public class LocalFileStorage implements FileStorage {
             var file = File.createTempFile("file", "");
             file.deleteOnExit();
             Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            return new LoadResult.Success(new FileUuid(file.getName()));
+            return new LoadResult.Success(new FileUuid(file.getName(), FOLDER));
         } catch (IOException e) {
             log.warn("File not loaded. Filename: {}, username: {}", uploadParams.fileName(), uploadParams.userName(), e);
             return new LoadResult.Failed.FileNotLoaded(e.getMessage());
