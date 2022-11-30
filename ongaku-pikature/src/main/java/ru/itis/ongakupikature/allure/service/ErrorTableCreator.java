@@ -20,9 +20,9 @@ public class ErrorTableCreator {
     }
 
     static final String TABLE_LINE = "| %d | %s | %s | %s | %s | %s | %s |\n";
-    static final String TABLE_HEADER = "| № | Epic | Feature | Story | Test | Result | Error |\n| --- | --- | --- | --- | --- | --- |\n";
+    static final String TABLE_HEADER = "| № | Epic | Feature | Story | Test | Result | Error |\n| --- | --- | --- | --- | --- | --- | -- |\n";
 
-    public static String createTableBody(String testCasesPath, String link, String name) throws IOException {
+    public static String createTableBody(String testCasesPath) throws IOException {
 
         List<Path> filesPath = getFilesInFolder(testCasesPath);
         List<TestCase> tests = getTestCasesDataInFolder(filesPath);
@@ -47,9 +47,9 @@ public class ErrorTableCreator {
             result.append(
                     TABLE_LINE.formatted(
                             ++caseNumber,
-                            Strings.isNotEmpty(test.getEpic()) ? test.getEpic() : " ",
-                            Strings.isNotEmpty(test.getFeature()) ? test.getFeature() : " ",
-                            Strings.isNotEmpty(test.getStory()) ? test.getStory() : " ",
+                            Strings.isNotEmpty(test.getEpic()) ? test.getEpic() : "",
+                            Strings.isNotEmpty(test.getFeature()) ? test.getFeature() : "",
+                            Strings.isNotEmpty(test.getStory()) ? test.getStory() : "",
                             test.getName(),
                             test.getStatus(),
                             test.getStatusMessage()
