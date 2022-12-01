@@ -1,11 +1,22 @@
 package ru.itis.generator;
 
-import ru.itis.dto.Issue;
-import ru.itis.dto.TestCase;
+import ru.itis.builder.IssueBuilder;
+import ru.itis.builder.YouTrackIssueBuilder;
+import ru.itis.parser.AllureReportParser;
+import ru.itis.parser.TestRepostParser;
+import ru.itis.request.RequestIssue;
+import ru.itis.utils.FileLoader;
 
-import java.util.List;
+public class IssueGenerator {
 
-public interface IssueGenerator {
+    IssueBuilder issueBuilder = new YouTrackIssueBuilder();
+    TestRepostParser testRepostParser = new AllureReportParser();
+    RequestIssue requestIssue = new RequestIssue();
 
-    Issue generateIssue(List<TestCase> testCases, String projectId);
+    public void createIssue(String path, String uri, String token, String projectId) {
+        var paths = FileLoader.getFilesInFolder(path);
+        var testCases = testRepostParser.readTestCases(paths);
+        var issue = issueBuilder.generateIssue(testCases, projectId);
+        requestIssue.sendIssue(uri, token, issue);
+    }
 }

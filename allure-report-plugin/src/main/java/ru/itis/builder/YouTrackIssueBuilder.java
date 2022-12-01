@@ -1,4 +1,4 @@
-package ru.itis.generator;
+package ru.itis.builder;
 
 import lombok.RequiredArgsConstructor;
 import ru.itis.dto.Issue;
@@ -8,7 +8,7 @@ import ru.itis.dto.TestCase;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class YouTrackIssueGenerator implements IssueGenerator {
+public class YouTrackIssueBuilder implements IssueBuilder {
 
     private static final String SUMMARY = "Неуспешные тесты";
     private static final String DESCRIPTION = "Исправить тесты:\n\n%s";

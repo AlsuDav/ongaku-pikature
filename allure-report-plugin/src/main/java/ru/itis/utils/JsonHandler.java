@@ -10,6 +10,7 @@ import ru.itis.dto.TestCase;
 import ru.itis.exception.ReadTestCaseException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class JsonHandler {
 
@@ -18,15 +19,16 @@ public class JsonHandler {
     }
 
     public static String serializeIssue(Issue issue) {
-        var projectObj = new JSONObject();
-        projectObj.put("id", issue.getProject().getId());
+        var projectMap = new HashMap<String, String>();
+        projectMap.put("id", issue.getProject().getId());
 
-        var obj = new JSONObject();
-        obj.put("project", projectObj);
-        obj.put("summary", issue.getSummary());
-        obj.put("description", issue.getDescription());
+        var issueMap = new HashMap<String, Object>();
+        issueMap.put("project", new JSONObject(projectMap));
+        issueMap.put("summary", issue.getSummary());
+        issueMap.put("description", issue.getDescription());
+        var issueObj = new JSONObject(issueMap);
 
-        return obj.toJSONString();
+        return issueObj.toJSONString();
     }
 
     public static TestCase deserializeIssue(String testCaseJson) {

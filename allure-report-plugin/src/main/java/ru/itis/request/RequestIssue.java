@@ -1,4 +1,4 @@
-package ru.itis.creator;
+package ru.itis.request;
 
 import ru.itis.dto.Issue;
 import ru.itis.utils.JsonHandler;
@@ -9,7 +9,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class IssueCreator {
+public class RequestIssue {
 
     public void sendIssue(String url, String token, Issue issue) {
         var opt = JsonHandler.serializeIssue(issue);
