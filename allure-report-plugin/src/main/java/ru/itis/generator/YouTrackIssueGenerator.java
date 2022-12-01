@@ -10,7 +10,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class YouTrackIssueGenerator implements IssueGenerator {
 
-    private static final String PROJECT_ID = "0-1";
     private static final String SUMMARY = "Неуспешные тесты";
     private static final String DESCRIPTION = "Исправить тесты:\n\n%s";
     private static final String DEFAULT_VALUE = "";
@@ -18,8 +17,9 @@ public class YouTrackIssueGenerator implements IssueGenerator {
     private static final String TABLE_HEADER = "| № | Epic | Feature | Story | Test | Result | Error |\n| --- | --- | --- | --- | --- | --- | -- |\n";
 
     @Override
-    public Issue createIssue(List<TestCase> testCases) {
-        return new Issue(new Project(PROJECT_ID), SUMMARY, DESCRIPTION.formatted(createTableLines(testCases)));
+    public Issue generateIssue(List<TestCase> testCases, String projectId) {
+        var tableLines = createTableLines(testCases);
+        return new Issue(new Project(projectId), SUMMARY, DESCRIPTION.formatted(tableLines));
     }
 
     private String createTableLines(List<TestCase> testsCases) {

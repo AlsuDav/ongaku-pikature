@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface IssueGenerator {
 
-    Issue createIssue(List<TestCase> testCases);
+    Issue generateIssue(List<TestCase> testCases, String projectId);
 }

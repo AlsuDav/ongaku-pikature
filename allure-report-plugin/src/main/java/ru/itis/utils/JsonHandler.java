@@ -1,0 +1,52 @@
+package ru.itis.utils;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import ru.itis.dto.Issue;
+import ru.itis.dto.LabelValue;
+import ru.itis.dto.TestCase;
+import ru.itis.exception.ReadTestCaseException;
+
+import java.util.ArrayList;
+
+public class JsonHandler {
+
+    private JsonHandler() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    public static String serializeIssue(Issue issue) {
+        var projectObj = new JSONObject();
+        projectObj.put("id", issue.getProject().getId());
+
+        var obj = new JSONObject();
+        obj.put("project", projectObj);
+        obj.put("summary", issue.getSummary());
+        obj.put("description", issue.getDescription());
+
+        return obj.toJSONString();
+    }
+
+    public static TestCase deserializeIssue(String testCaseJson) {
+        try {
+            JSONParser parser = new JSONParser();
+            var obj =  (JSONObject) parser.parse(testCaseJson);
+            var array = (JSONArray) obj.get("labels");
+            var labels = new ArrayList<LabelValue>();
+            for (var o: array) {
+                var object = (JSONObject) o;
+                labels.add(new LabelValue((String) object.get("name"), (String) object.get("value")));
+            }
+            return new TestCase(
+                    (String) obj.get("name"),
+                    (String) obj.get("status"),
+                    (String) obj.get("statusMessage"),
+                    labels
+            );
+        } catch (ParseException e) {
+            throw new ReadTestCaseException(e.getMessage());
+        }
+    }
+}

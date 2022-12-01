@@ -1,7 +1,7 @@
 package ru.itis.creator;
 
 import ru.itis.dto.Issue;
-import ru.itis.exception.ConvertIssueException;
+import ru.itis.utils.JsonHandler;
 
 import java.io.IOException;
 import java.net.URI;
@@ -9,27 +9,22 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class IssueSender {
+public class IssueCreator {
 
-    public void sendIssue(String url, Issue issue) {
-        var opt = issue.toJson();
-        if (opt.isPresent()) {
-            createIssue(url, opt.get());
-        } else {
-            throw new ConvertIssueException("Cannot convert issue %s".formatted(issue));
-        }
+    public void sendIssue(String url, String token, Issue issue) {
+        var opt = JsonHandler.serializeIssue(issue);
+        createIssue(url, token, opt);
     }
 
-    private void createIssue(String url, String json) {
+    private void createIssue(String url, String token, String json) {
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
-                .header("Authorization", "Bearer perm:Z2dhbGltb3ZhMDY=.NDktMQ==.qrTwIs9S5g6SmBGCVowzwL0Lmq9sKP")
+                .header("Authorization", "Bearer %s".formatted(token))
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-
         try {
             client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (InterruptedException | IOException e) {

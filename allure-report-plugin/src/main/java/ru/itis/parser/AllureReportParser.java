@@ -1,12 +1,8 @@
 package ru.itis.parser;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import ru.itis.dto.LabelValue;
 import ru.itis.dto.TestCase;
 import ru.itis.exception.ReadTestCaseException;
+import ru.itis.utils.JsonHandler;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,24 +34,11 @@ public class AllureReportParser implements TestRepostParser {
 
     private TestCase readTestCaseJson(String path) {
         try {
-            String text = new String(Files.readAllBytes(Paths.get(path)));
-            JSONParser parser = new JSONParser();
-            var obj =  (JSONObject) parser.parse(text);
-            var array = (JSONArray) obj.get("labels");
-            var labels = new ArrayList<LabelValue>();
-            for (var o: array) {
-                var object = (JSONObject) o;
-                labels.add(new LabelValue((String) object.get("name"), (String) object.get("value")));
-            }
-            var testCase = new TestCase(
-                    (String) obj.get("name"),
-                    (String) obj.get("status"),
-                    (String) obj.get("statusMessage"),
-                    labels
-            );
+            var testCaseJson = new String(Files.readAllBytes(Paths.get(path)));
+            var testCase = JsonHandler.deserializeIssue(testCaseJson);
             testCase.initLabels();
             return testCase;
-        } catch (IOException | ParseException e) {
+        } catch (IOException e) {
             throw new ReadTestCaseException(e.getMessage());
         }
     }
