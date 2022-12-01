@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import ru.itis.enums.TestStatus;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class TestCase {
     private final String name;
 
     @SerializedName("status")
-    private final String status;
+    private final TestStatus status;
 
     @SerializedName("statusMessage")
     private final String statusMessage;

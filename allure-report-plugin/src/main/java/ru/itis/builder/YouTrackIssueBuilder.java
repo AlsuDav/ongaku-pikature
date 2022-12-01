@@ -32,9 +32,9 @@ public class YouTrackIssueBuilder implements IssueBuilder {
                             ++caseNumber,
                             test.getEpic() != null ? test.getEpic() : DEFAULT_VALUE,
                             test.getFeature() != null ? test.getFeature() : DEFAULT_VALUE,
-                            test.getStory()  != null ? test.getStory() : DEFAULT_VALUE,
+                            test.getStory() != null ? test.getStory() : DEFAULT_VALUE,
                             test.getName(),
-                            test.getStatus(),
+                            test.getStatus().getColoredStatus(),
                             test.getStatusMessage()
                     )
             );

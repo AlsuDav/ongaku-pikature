@@ -158,6 +158,8 @@
 				<configuration>
 					<path>${project.basedir}/allure-report/data/test-cases</path>
 					<uri>https://ongaku-pikature.youtrack.cloud/api/issues</uri>
+					<token>perm:Z2dhbGltb3ZhMDY=.NDktMQ==.qrTwIs9S5g6SmBGCVowzwL0Lmq9sKP</token>
+					<projectId>0-1</projectId>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -7,6 +7,7 @@ import org.json.simple.parser.ParseException;
 import ru.itis.dto.Issue;
 import ru.itis.dto.LabelValue;
 import ru.itis.dto.TestCase;
+import ru.itis.enums.TestStatus;
 import ru.itis.exception.ReadTestCaseException;
 
 import java.util.ArrayList;
@@ -41,9 +42,10 @@ public class JsonHandler {
                 var object = (JSONObject) o;
                 labels.add(new LabelValue((String) object.get("name"), (String) object.get("value")));
             }
+            var statusName = (String) obj.get("status");
             return new TestCase(
                     (String) obj.get("name"),
-                    (String) obj.get("status"),
+                    TestStatus.fromStatusName(statusName),
                     (String) obj.get("statusMessage"),
                     labels
             );

@@ -1,6 +1,7 @@
 package ru.itis.parser;
 
 import ru.itis.dto.TestCase;
+import ru.itis.enums.TestStatus;
 import ru.itis.exception.ReadTestCaseException;
 import ru.itis.utils.JsonHandler;
 
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class AllureReportParser implements TestRepostParser {
 
-    private static final String SUCCESS_STATUS = "passed";
+    private static final TestStatus SUCCESS_STATUS = TestStatus.fromStatusName("passed");
 
     @Override
     public List<TestCase> readTestCases(List<Path> paths) {

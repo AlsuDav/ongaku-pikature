@@ -6,6 +6,7 @@ import ru.itis.parser.AllureReportParser;
 import ru.itis.parser.TestRepostParser;
 import ru.itis.request.RequestIssue;
 import ru.itis.utils.FileLoader;
+import ru.itis.utils.JsonHandler;
 
 public class IssueGenerator {
 
@@ -17,6 +18,6 @@ public class IssueGenerator {
         var paths = FileLoader.getFilesInFolder(path);
         var testCases = testRepostParser.readTestCases(paths);
         var issue = issueBuilder.generateIssue(testCases, projectId);
-        requestIssue.sendIssue(uri, token, issue);
+        requestIssue.sendIssue(uri, token, JsonHandler.serializeIssue(issue));
     }
 }
