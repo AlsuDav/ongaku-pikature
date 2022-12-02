@@ -1,17 +1,14 @@
-package ru.itis.ongakupikature.security;
+package ru.itis.ongakupikature.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.itis.ongakupikature.dto.MusicDto;
 import ru.itis.ongakupikature.entity.Author;
 import ru.itis.ongakupikature.entity.Music;
-import ru.itis.ongakupikature.entity.PlaylistMusic;
 import ru.itis.ongakupikature.entity.User;
 import ru.itis.ongakupikature.repository.MusicRepository;
-import ru.itis.ongakupikature.repository.PlaylistMusicRepository;
 import ru.itis.ongakupikature.repository.PlaylistRepository;
 
 import java.util.List;
@@ -22,7 +19,7 @@ public class MusicService {
 
     private final MusicRepository musicRepository;
     private final PlaylistRepository playlistRepository;
-    private final PlaylistMusicRepository playlistMusicRepository;
+    private final LikeService likeService;
 
     public List<MusicDto> getAllMusic() {
         var allMusicPage = musicRepository.findAll(PageRequest.of(0, 10, Sort.by("id")));
@@ -39,15 +36,14 @@ public class MusicService {
     }
 
     //TODO finish
-    @Transactional
-    public boolean setLike(User user, Long musicId) {
+    public boolean setLike(User user, Long musicId, boolean isLike) {
         try {
             var favoritePlaylistId = 1L;
-            var playlistMusic = PlaylistMusic.builder()
-                    .playlistId(favoritePlaylistId)
-                    .musicId(musicId)
-                    .build();
-            playlistMusicRepository.save(playlistMusic);
+            if (isLike) {
+                likeService.addLike(favoritePlaylistId, musicId);
+            } else {
+                likeService.deleteLike(favoritePlaylistId, musicId);
+            }
             return true;
         } catch (Exception e) {
             return false;

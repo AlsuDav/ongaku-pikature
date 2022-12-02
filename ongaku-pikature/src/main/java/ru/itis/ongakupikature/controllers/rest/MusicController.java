@@ -3,12 +3,9 @@ package ru.itis.ongakupikature.controllers.rest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.itis.ongakupikature.dto.MusicDto;
-import ru.itis.ongakupikature.security.MusicService;
+import ru.itis.ongakupikature.service.MusicService;
 import ru.itis.ongakupikature.security.UserDetailsImpl;
 
 import java.util.List;
@@ -33,12 +30,13 @@ public class MusicController {
     }
 
     @PostMapping("/song/{id}/like")
-    public ResponseEntity<Void> setLike(
+    public ResponseEntity<Void> manageLike(
             Authentication authentication,
-            @PathVariable("id") Long musicId
+            @PathVariable("id") Long musicId,
+            @RequestParam("isLike") boolean isLike
     ) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        var result = musicService.setLike(userDetails.getUser(), musicId);
+        var result = musicService.setLike(userDetails.getUser(), musicId, isLike);
         if (result) {
             return ResponseEntity.ok().build();
         }
