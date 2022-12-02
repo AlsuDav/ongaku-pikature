@@ -53,6 +53,9 @@ public class User {
     @Column(name = "photo_path")
     private String photoPath;
 
+    @Column(name = "favorite_playlist_id")
+    private Long favoritePlaylistId;
+
     public enum Role {
         ADMIN, USER
     }
