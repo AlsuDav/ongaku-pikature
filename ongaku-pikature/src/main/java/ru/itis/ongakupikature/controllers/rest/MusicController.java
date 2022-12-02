@@ -49,6 +49,7 @@ public class MusicController {
             Authentication authentication,
             @PathVariable("id") Long musicId
     ) {
-        return musicService.getMusicData(authentication, musicId);
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        return musicService.getMusicData(userDetails.getUser(), musicId);
     }
 }

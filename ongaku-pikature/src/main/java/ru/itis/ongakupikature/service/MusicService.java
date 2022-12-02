@@ -3,17 +3,15 @@ package ru.itis.ongakupikature.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import ru.itis.ongakupikature.dto.MusicMoreData;
 import ru.itis.ongakupikature.dto.MusicDto;
+import ru.itis.ongakupikature.dto.MusicMoreData;
 import ru.itis.ongakupikature.entity.Author;
 import ru.itis.ongakupikature.entity.Music;
 import ru.itis.ongakupikature.entity.User;
 import ru.itis.ongakupikature.repository.MusicRepository;
 import ru.itis.ongakupikature.repository.NeuroTextRepository;
 import ru.itis.ongakupikature.repository.PlaylistRepository;
-import ru.itis.ongakupikature.security.UserDetailsImpl;
 
 import java.util.List;
 
@@ -54,9 +52,7 @@ public class MusicService {
         }
     }
 
-    public MusicMoreData getMusicData(Authentication authentication, Long musicId) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        var user = userDetails.getUser();
+    public MusicMoreData getMusicData(User user, Long musicId) {
         var neuroText = neuroTextRepository.findByUserAndMusicId(user, musicId);
         var isLiked = likeService.isLiked(user, musicId);
         return new MusicMoreData(isLiked, neuroText.getUserPicturePath());
