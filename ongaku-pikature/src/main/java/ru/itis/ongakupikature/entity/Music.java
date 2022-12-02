@@ -13,6 +13,8 @@ import java.util.List;
 @Builder
 @Entity
 @Table(schema = "ongaku_pikature", name = "music")
+@NamedEntityGraph(name = "music.authors",
+        attributeNodes = {@NamedAttributeNode("authors")})
 public class Music {
 
     @Id
@@ -37,7 +39,10 @@ public class Music {
     @Column(name = "poster_path")
     private String posterPath;
 
-    @ManyToMany(mappedBy = "musicList")
+    @ManyToMany
+    @JoinTable(name = "author_music", schema = "ongaku_pikature",
+            joinColumns = {@JoinColumn(name = "music_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "author_id", referencedColumnName = "id")})
     private List<Author> authors;
 
 }
