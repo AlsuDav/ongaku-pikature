@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.itis.ongakupikature.dto.SignUpDto;
+import ru.itis.ongakupikature.entity.Playlist;
 import ru.itis.ongakupikature.entity.User;
+import ru.itis.ongakupikature.repository.PlaylistRepository;
 import ru.itis.ongakupikature.repository.UsersRepository;
 
 import java.time.LocalDate;
@@ -15,10 +17,13 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class SignUpServiceImpl implements SignUpService {
 
+    private static final String FAVORITE_PLAYLIST_NAME = "Избранное";
+
     @Value("${profile.image.path}")
     private String defaultImagePath;
 
     private final UsersRepository usersRepository;
+    private final PlaylistRepository playlistRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -34,6 +39,14 @@ public class SignUpServiceImpl implements SignUpService {
                 .role(User.Role.USER)
                 .photoPath(defaultImagePath)
                 .build();
+        usersRepository.save(user);
+        var favoritePlaylist = Playlist.builder()
+                .name(FAVORITE_PLAYLIST_NAME)
+                .user(user)
+                .dateCreate(LocalDate.now())
+                .build();
+        playlistRepository.save(favoritePlaylist);
+        user.setFavoritePlaylistId(favoritePlaylist.getId());
         usersRepository.save(user);
     }
 }
