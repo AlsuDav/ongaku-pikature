@@ -8,6 +8,7 @@ import ru.itis.ongakupikature.dto.MusicDto;
 import ru.itis.ongakupikature.entity.Author;
 import ru.itis.ongakupikature.entity.Music;
 import ru.itis.ongakupikature.repository.MusicRepository;
+import ru.itis.ongakupikature.repository.PlaylistRepository;
 
 import java.util.List;
 
@@ -16,10 +17,18 @@ import java.util.List;
 public class MusicService {
 
     private final MusicRepository musicRepository;
+    private final PlaylistRepository playlistRepository;
 
-    public List<MusicDto> getMainPageMusic() {
+    public List<MusicDto> getAllMusic() {
         var allMusicPage = musicRepository.findAll(PageRequest.of(0, 10, Sort.by("id")));
         return allMusicPage.getContent().stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    public List<MusicDto> getPlaylistMusic(Long playlistId) {
+        var playlist = playlistRepository.findById(playlistId).orElseThrow();
+        return playlist.getMusicList().stream()
                 .map(this::toDto)
                 .toList();
     }
