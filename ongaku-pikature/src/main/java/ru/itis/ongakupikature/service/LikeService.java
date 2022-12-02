@@ -14,23 +14,22 @@ public class LikeService {
     private final PlaylistMusicRepository playlistMusicRepository;
 
     @Transactional
-    public void addLike(Long playlistId, Long musicId) {
+    public void addLike(User user, Long musicId) {
         var playlistMusic = PlaylistMusic.builder()
-                .playlistId(playlistId)
+                .playlistId(user.getFavoritePlaylistId())
                 .musicId(musicId)
                 .build();
         playlistMusicRepository.save(playlistMusic);
     }
 
     @Transactional
-    public void deleteLike(Long playlistId, Long musicId) {
-        var playlistMusic = playlistMusicRepository.findByPlaylistIdAndMusicId(playlistId, musicId);
+    public void deleteLike(User user, Long musicId) {
+        var playlistMusic = playlistMusicRepository.findByPlaylistIdAndMusicId(user.getFavoritePlaylistId(), musicId);
         playlistMusicRepository.delete(playlistMusic);
     }
 
     public boolean isLiked(User user, Long musicId) {
         var favoritePlaylistId = user.getFavoritePlaylistId();
-        var playlistMusic = playlistMusicRepository.findByPlaylistIdAndMusicId(favoritePlaylistId, musicId);
-        return playlistMusic != null;
+        return playlistMusicRepository.existsByPlaylistIdAndMusicId(favoritePlaylistId, musicId);
     }
 }

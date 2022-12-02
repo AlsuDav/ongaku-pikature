@@ -40,11 +40,10 @@ public class MusicService {
 
     public boolean setLike(User user, Long musicId, boolean isLike) {
         try {
-            var favoritePlaylistId = user.getFavoritePlaylistId();
             if (isLike) {
-                likeService.addLike(favoritePlaylistId, musicId);
+                likeService.addLike(user, musicId);
             } else {
-                likeService.deleteLike(favoritePlaylistId, musicId);
+                likeService.deleteLike(user, musicId);
             }
             return true;
         } catch (Exception e) {
