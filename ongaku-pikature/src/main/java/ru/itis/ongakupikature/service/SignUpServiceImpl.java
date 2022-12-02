@@ -2,6 +2,7 @@ package ru.itis.ongakupikature.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.itis.ongakupikature.dto.SignUpDto;
@@ -18,6 +19,9 @@ public class SignUpServiceImpl implements SignUpService {
 
     private static final String FAVORITE_PLAYLIST_NAME = "Избранное";
 
+    @Value("${profile.image.path}")
+    private String defaultImagePath;
+
     private final UsersRepository usersRepository;
     private final PlaylistRepository playlistRepository;
 
@@ -33,6 +37,7 @@ public class SignUpServiceImpl implements SignUpService {
                 .phoneNumber(form.getPhoneNumber())
                 .isActive(Boolean.TRUE)
                 .role(User.Role.USER)
+                .photoPath(defaultImagePath)
                 .build();
         usersRepository.save(user);
         var favoritePlaylist = Playlist.builder()
