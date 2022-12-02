@@ -34,12 +34,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class MusicControllerTest {
 
+    private static final String USERNAME = "email";
+    private static final List<MusicDto> MUSIC_DTO_LIST = List.of(
+            MusicDto.builder()
+                    .id(1L)
+                    .name("name")
+                    .authors(List.of("author1", "author2"))
+                    .musicPath("musicPath")
+                    .posterPath("posterPath")
+                    .build(),
+            MusicDto.builder()
+                    .id(2L)
+                    .name("name2")
+                    .authors(List.of("author1"))
+                    .musicPath("musicPath")
+                    .posterPath("posterPath")
+                    .build()
+    );
+
     @PostConstruct
     void saveUser() {
         userRepository.save(User.builder()
                 .id(1L)
                 .login("login")
-                .email("email")
+                .email(USERNAME)
                 .password("password")
                 .role(User.Role.USER)
                 .build());
@@ -70,54 +88,22 @@ class MusicControllerTest {
 
     @Test
     void getAllMusic_shouldReturnAllMusic() throws Exception {
-        var musicDtoList = List.of(
-                MusicDto.builder()
-                        .id(1L)
-                        .name("name")
-                        .authors(List.of("author1", "author2"))
-                        .musicPath("musicPath")
-                        .posterPath("posterPath")
-                        .build(),
-                MusicDto.builder()
-                        .id(2L)
-                        .name("name2")
-                        .authors(List.of("author1"))
-                        .musicPath("musicPath")
-                        .posterPath("posterPath")
-                        .build()
-        );
-        given(musicService.getAllMusic()).willReturn(musicDtoList);
+        given(musicService.getAllMusic()).willReturn(MUSIC_DTO_LIST);
 
         var result = mvc.perform(get("/welcome_page"));
 
         checkStatusOk(result);
-        checkMusicDtoList(result, musicDtoList);
+        checkMusicDtoList(result);
     }
 
     @Test
     void getPlaylistMusic_shouldReturnAllPlaylistMusic() throws Exception {
-        var musicDtoList = List.of(
-                MusicDto.builder()
-                        .id(1L)
-                        .name("name")
-                        .authors(List.of("author1", "author2"))
-                        .musicPath("musicPath")
-                        .posterPath("posterPath")
-                        .build(),
-                MusicDto.builder()
-                        .id(2L)
-                        .name("name2")
-                        .authors(List.of("author1"))
-                        .musicPath("musicPath")
-                        .posterPath("posterPath")
-                        .build()
-        );
-        given(musicService.getPlaylistMusic(1L)).willReturn(musicDtoList);
+        given(musicService.getPlaylistMusic(1L)).willReturn(MUSIC_DTO_LIST);
 
         var result = mvc.perform(get("/login/playlists/1"));
 
         checkStatusOk(result);
-        checkMusicDtoList(result, musicDtoList);
+        checkMusicDtoList(result);
     }
 
     @Test
@@ -165,8 +151,8 @@ class MusicControllerTest {
     }
 
     // Проверить, что лист песен совпадают с ожидаемым
-    private void checkMusicDtoList(ResultActions response, List<MusicDto> expected) throws Exception {
-        response.andExpect(content().json(mapper.writeValueAsString(expected)));
+    private void checkMusicDtoList(ResultActions response) throws Exception {
+        response.andExpect(content().json(mapper.writeValueAsString(MUSIC_DTO_LIST)));
     }
 
     // Проверить, что дополнительная информация по песне совпадают с ожидаемой
