@@ -62,7 +62,7 @@ class ProfileInfoControllerTest {
         var saveImageResult = new SaveImageResult.Success();
         given(profileService.saveImage(any(), any())).willReturn(saveImageResult);
 
-        var result = mvc.perform(MockMvcRequestBuilders.multipart("/profile/1")
+        var result = mvc.perform(MockMvcRequestBuilders.multipart("/profile/1/photo")
                 .file(MULTIPART_FILE));
 
         checkStatusOk(result);
@@ -73,7 +73,7 @@ class ProfileInfoControllerTest {
         var saveImageResult = new SaveImageResult.Error();
         given(profileService.saveImage(any(), any())).willReturn(saveImageResult);
 
-        var result = mvc.perform(MockMvcRequestBuilders.multipart("/profile/1")
+        var result = mvc.perform(MockMvcRequestBuilders.multipart("/profile/1/photo")
                 .file(MULTIPART_FILE));
 
         checkStatusBadRequest(result);

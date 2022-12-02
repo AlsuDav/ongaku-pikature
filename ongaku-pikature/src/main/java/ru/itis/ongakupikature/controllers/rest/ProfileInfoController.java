@@ -19,7 +19,7 @@ public class ProfileInfoController {
         return profileService.getProfileInfo(userId);
     }
 
-    @PostMapping("/profile/{id}")
+    @PostMapping("/profile/{id}/photo")
     public ResponseEntity<Void> savePhoto(@PathVariable("id") Long userId,
                                     @RequestParam(value = "image") MultipartFile multipartFile) {
         var result = profileService.saveImage(multipartFile, userId);
