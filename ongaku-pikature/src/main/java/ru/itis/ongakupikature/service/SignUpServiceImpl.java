@@ -2,6 +2,7 @@ package ru.itis.ongakupikature.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.itis.ongakupikature.dto.SignUpDto;
@@ -13,6 +14,9 @@ import java.time.LocalDate;
 @Service
 @RequiredArgsConstructor
 public class SignUpServiceImpl implements SignUpService {
+
+    @Value("${profile.image.path}")
+    private String defaultImagePath;
 
     private final UsersRepository usersRepository;
 
@@ -28,6 +32,7 @@ public class SignUpServiceImpl implements SignUpService {
                 .phoneNumber(form.getPhoneNumber())
                 .isActive(Boolean.TRUE)
                 .role(User.Role.USER)
+                .photoPath(defaultImagePath)
                 .build();
         usersRepository.save(user);
     }
