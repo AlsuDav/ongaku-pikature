@@ -24,6 +24,15 @@ public class MainMojo extends AbstractMojo {
     IssueGenerator issueGenerator = new IssueGenerator();
 
     public void execute() throws MojoExecutionException {
-        issueGenerator.createIssue(path, uri, token, projectId);
+        var result = issueGenerator.createIssue(path, uri, token, projectId);
+        if (result != null) {
+            switch (result.getLevel()) {
+                case ERROR -> getLog().error(result.getMessage());
+                case DEBUG -> getLog().debug(result.getMessage());
+                case INFO -> getLog().info(result.getMessage());
+                case WARN -> getLog().warn(result.getMessage());
+            }
+
+        }
     }
 }
