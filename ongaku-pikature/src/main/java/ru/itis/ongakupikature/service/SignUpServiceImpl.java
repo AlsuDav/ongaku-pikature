@@ -41,6 +41,7 @@ public class SignUpServiceImpl implements SignUpService {
                 .dateCreate(LocalDate.now())
                 .build();
         playlistRepository.save(favoritePlaylist);
+        user.setFavoritePlaylistId(favoritePlaylist.getId());
         usersRepository.save(user);
     }
 }
