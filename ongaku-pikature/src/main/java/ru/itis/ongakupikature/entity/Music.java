@@ -31,6 +31,12 @@ public class Music {
     @Column(name = "auto_key_words")
     private String autoKeyWords;
 
+    @Column(name = "file_path")
+    private String filePath;
+
+    @Column(name = "poster_path")
+    private String posterPath;
+
     @ManyToMany(mappedBy = "musicList")
     private List<Author> authors;
 

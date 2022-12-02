@@ -3,13 +3,17 @@ package ru.itis.ongakupikature.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import ru.itis.ongakupikature.dto.MusicMoreData;
 import ru.itis.ongakupikature.dto.MusicDto;
 import ru.itis.ongakupikature.entity.Author;
 import ru.itis.ongakupikature.entity.Music;
 import ru.itis.ongakupikature.entity.User;
 import ru.itis.ongakupikature.repository.MusicRepository;
+import ru.itis.ongakupikature.repository.NeuroTextRepository;
 import ru.itis.ongakupikature.repository.PlaylistRepository;
+import ru.itis.ongakupikature.security.UserDetailsImpl;
 
 import java.util.List;
 
@@ -20,6 +24,7 @@ public class MusicService {
     private final MusicRepository musicRepository;
     private final PlaylistRepository playlistRepository;
     private final LikeService likeService;
+    private final NeuroTextRepository neuroTextRepository;
 
     public List<MusicDto> getAllMusic() {
         var allMusicPage = musicRepository.findAll(PageRequest.of(0, 10, Sort.by("id")));
@@ -35,10 +40,9 @@ public class MusicService {
                 .toList();
     }
 
-    //TODO finish
     public boolean setLike(User user, Long musicId, boolean isLike) {
         try {
-            var favoritePlaylistId = 1L;
+            var favoritePlaylistId = user.getFavoritePlaylistId();
             if (isLike) {
                 likeService.addLike(favoritePlaylistId, musicId);
             } else {
@@ -50,7 +54,14 @@ public class MusicService {
         }
     }
 
-    //TODO finish
+    public MusicMoreData getMusicData(Authentication authentication, Long musicId) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        var user = userDetails.getUser();
+        var neuroText = neuroTextRepository.findByUserAndMusicId(user, musicId);
+        var isLiked = likeService.isLiked(user, musicId);
+        return new MusicMoreData(isLiked, neuroText.getUserPicturePath());
+    }
+
     private MusicDto toDto(Music music) {
         var authors = music.getAuthors().stream()
                 .map(Author::getName)
@@ -58,8 +69,8 @@ public class MusicService {
         return MusicDto.builder()
                 .id(music.getId())
                 .name(music.getName())
-                .musicPath("")
-                .picturePath("")
+                .musicPath(music.getFilePath())
+                .posterPath(music.getPosterPath())
                 .authors(authors)
                 .build();
     }

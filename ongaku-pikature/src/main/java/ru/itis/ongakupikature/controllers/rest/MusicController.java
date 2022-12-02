@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import ru.itis.ongakupikature.dto.MusicMoreData;
 import ru.itis.ongakupikature.dto.MusicDto;
 import ru.itis.ongakupikature.service.MusicService;
 import ru.itis.ongakupikature.security.UserDetailsImpl;
@@ -41,5 +42,13 @@ public class MusicController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/song/{id}")
+    public MusicMoreData getMusicMoreData(
+            Authentication authentication,
+            @PathVariable("id") Long musicId
+    ) {
+        return musicService.getMusicData(authentication, musicId);
     }
 }

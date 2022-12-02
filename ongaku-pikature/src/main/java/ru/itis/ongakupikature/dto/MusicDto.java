@@ -9,7 +9,7 @@ public record MusicDto(
         Long id,
         String name,
         List<String> authors,
-        String picturePath,
+        String posterPath,
         String musicPath
 ) {
 }
