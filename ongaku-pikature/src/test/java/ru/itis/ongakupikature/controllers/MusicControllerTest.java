@@ -1,11 +1,11 @@
 package ru.itis.ongakupikature.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.qameta.allure.*;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
@@ -14,27 +14,22 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ru.itis.ongakupikature.dto.MusicDto;
 import ru.itis.ongakupikature.dto.MusicMoreData;
-import ru.itis.ongakupikature.entity.User;
-import ru.itis.ongakupikature.repository.UsersRepository;
 import ru.itis.ongakupikature.service.MusicService;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
-class MusicControllerTest {
+@Epic("Песня")
+class MusicControllerTest extends BaseControllerTest {
 
-    private static final String USERNAME = "email";
     private static final List<MusicDto> MUSIC_DTO_LIST = List.of(
             MusicDto.builder()
                     .id(1L)
@@ -52,17 +47,6 @@ class MusicControllerTest {
                     .build()
     );
 
-    @PostConstruct
-    void saveUser() {
-        userRepository.save(User.builder()
-                .id(1L)
-                .login("login")
-                .email(USERNAME)
-                .password("password")
-                .role(User.Role.USER)
-                .build());
-    }
-
     @Autowired
     private MockMvc mvc;
 
@@ -72,8 +56,8 @@ class MusicControllerTest {
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
-    private UsersRepository userRepository;
+    @MockBean
+    private MusicService musicService;
 
     @BeforeEach
     void init() {
@@ -83,10 +67,11 @@ class MusicControllerTest {
                 .build();
     }
 
-    @MockBean
-    private MusicService musicService;
-
     @Test
+    @Severity(value = SeverityLevel.BLOCKER)
+    @DisplayName("Получить песни для главной страницы")
+    @Feature("Все песни")
+    @Story("Запрос")
     void getAllMusic_shouldReturnAllMusic() throws Exception {
         given(musicService.getAllMusic()).willReturn(MUSIC_DTO_LIST);
 
@@ -97,6 +82,10 @@ class MusicControllerTest {
     }
 
     @Test
+    @Severity(value = SeverityLevel.BLOCKER)
+    @DisplayName("Получить песни плейлиста")
+    @Feature("Песни плейлиста")
+    @Story("Запрос")
     void getPlaylistMusic_shouldReturnAllPlaylistMusic() throws Exception {
         given(musicService.getPlaylistMusic(1L)).willReturn(MUSIC_DTO_LIST);
 
@@ -107,6 +96,10 @@ class MusicControllerTest {
     }
 
     @Test
+    @Severity(value = SeverityLevel.CRITICAL)
+    @DisplayName("Успешный запрос на лайк")
+    @Feature("Лайк")
+    @Story("Запрос")
     @WithUserDetails(value = "email", userDetailsServiceBeanName = "customUserDetailsService")
     void manageLike_shouldReturnOk() throws Exception {
         given(musicService.setLike(any(), any(), anyBoolean())).willReturn(true);
@@ -114,10 +107,15 @@ class MusicControllerTest {
         var result = mvc.perform(post("/song/1/like")
                 .param("isLike", "true"));
 
+        verifySetLike(musicService);
         checkStatusOk(result);
     }
 
     @Test
+    @Severity(value = SeverityLevel.CRITICAL)
+    @DisplayName("Неуспешный запрос на лайк")
+    @Feature("Лайк")
+    @Story("Запрос")
     @WithUserDetails(value = "email", userDetailsServiceBeanName = "customUserDetailsService")
     void manageLike_shouldReturnBadRequest() throws Exception {
         given(musicService.setLike(any(), any(), anyBoolean())).willReturn(false);
@@ -125,10 +123,15 @@ class MusicControllerTest {
         var result = mvc.perform(post("/song/1/like")
                 .param("isLike", "true"));
 
+        verifySetLike(musicService);
         checkStatusBadRequest(result);
     }
 
     @Test
+    @Severity(value = SeverityLevel.BLOCKER)
+    @DisplayName("Получить дополнительную информацию по песне")
+    @Feature("Дополнительная информация")
+    @Story("Запрос")
     @WithUserDetails(value = "email", userDetailsServiceBeanName = "customUserDetailsService")
     void getMusicMoreData_shouldReturnOk() throws Exception {
         var musicMoreData = new MusicMoreData(true, "path");
@@ -140,23 +143,19 @@ class MusicControllerTest {
         checkMusicMoreDto(result, musicMoreData);
     }
 
-    // Проверить, что статус ответа успешный (200)
-    private void checkStatusOk(ResultActions response) throws Exception {
-        response.andExpect(status().isOk());
-    }
-
-    // Проверить, что статус ответа неуспешный (400)
-    private void checkStatusBadRequest(ResultActions response) throws Exception {
-        response.andExpect(status().isBadRequest());
-    }
-
-    // Проверить, что лист песен совпадают с ожидаемым
+    @Step("Лист песен совпадают с ожидаемым")
     private void checkMusicDtoList(ResultActions response) throws Exception {
         response.andExpect(content().json(mapper.writeValueAsString(MUSIC_DTO_LIST)));
     }
 
-    // Проверить, что дополнительная информация по песне совпадают с ожидаемой
-    private void checkMusicMoreDto(ResultActions response, MusicMoreData expected) throws Exception {
-        response.andExpect(content().json(mapper.writeValueAsString(expected)));
+    @Step("Дополнительная информация по песне совпадает с ожидаемой")
+    private void checkMusicMoreDto(ResultActions response, MusicMoreData musicMoreData) throws Exception {
+        response.andExpect(content().json(mapper.writeValueAsString(musicMoreData)));
+    }
+
+    @Step("Обработка запроса управления лайками")
+    private static void verifySetLike(MusicService musicService) {
+        verify(musicService)
+                .setLike(USER, 1L, true);
     }
 }

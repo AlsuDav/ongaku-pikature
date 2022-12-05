@@ -1,6 +1,8 @@
 package ru.itis.ongakupikature.service;
 
+import io.qameta.allure.*;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@Epic("Песня")
 @ExtendWith(MockitoExtension.class)
 class LikeServiceTest {
 
@@ -49,8 +52,46 @@ class LikeServiceTest {
     }
 
     @Test
+    @DisplayName("Поставить лайк")
+    @Feature("Лайк")
+    @Story("Сервис")
     void addLike_shouldSaveSongToFavoritePlaylist() {
         likeService.addLike(USER, MUSIC_ID);
+        verifySaveSongToFavoritePlaylist(playlistMusicRepository);
+    }
+
+    @Test
+    @DisplayName("Убрать лайк")
+    @Feature("Лайк")
+    @Story("Сервис")
+    void deleteLike_shouldDeleteSongFromFavoritePlaylist() {
+        likeService.deleteLike(USER, MUSIC_ID);
+        verifyDeleteSongFromFavoritePlaylist(playlistMusicRepository);
+    }
+
+    @Test
+    @DisplayName("Проверить, что лайк поставлен")
+    @Feature("Лайк")
+    @Story("Сервис")
+    void isLiked_shouldReturnTrue() {
+        var isLiked = likeService.isLiked(USER, MUSIC_ID);
+        verifyExistsByPlaylistIdAndMusicId(playlistMusicRepository, MUSIC_ID);
+        checkIsLikedTrue(isLiked);
+    }
+
+    @Test
+    @DisplayName("Проверить, что лайк не поставлен")
+    @Feature("Лайк")
+    @Story("Сервис")
+    void isLiked_shouldReturnFalse() {
+        var notLikedMusicId = MUSIC_ID + 1;
+        var isLiked = likeService.isLiked(USER, notLikedMusicId);
+        verifyExistsByPlaylistIdAndMusicId(playlistMusicRepository, notLikedMusicId);
+        checkIsLikedFalse(isLiked);
+    }
+
+    @Step("Сохранение песни в плейлист \"Избранное\"")
+    static void verifySaveSongToFavoritePlaylist(PlaylistMusicRepository playlistMusicRepository) {
         verify(playlistMusicRepository)
                 .save(PlaylistMusic.builder()
                         .playlistId(FAVORITE_PLAYLIST_ID)
@@ -59,29 +100,28 @@ class LikeServiceTest {
                 );
     }
 
-    @Test
-    void deleteLike_shouldDeleteSongFromFavoritePlaylist() {
-        likeService.deleteLike(USER, MUSIC_ID);
+    @Step("Удаление песни из плейлиста \"Избранное\"")
+    static void verifyDeleteSongFromFavoritePlaylist(PlaylistMusicRepository playlistMusicRepository) {
         verify(playlistMusicRepository)
                 .delete(PLAYLIST_MUSIC);
     }
 
-    @Test
-    void isLiked_shouldReturnTrue() {
-        var isLiked = likeService.isLiked(USER, MUSIC_ID);
+    @Step("Лайк поставлен")
+    static void checkIsLikedTrue(boolean isLiked) {
         assertThat(isLiked)
                 .isTrue();
-        verify(playlistMusicRepository)
-                .existsByPlaylistIdAndMusicId(FAVORITE_PLAYLIST_ID, MUSIC_ID);
     }
 
-    @Test
-    void isLiked_shouldReturnFalse() {
-        var notLikedMusicId = MUSIC_ID + 1;
-        var isLiked = likeService.isLiked(USER, notLikedMusicId);
+    @Step("Лайк не поставлен")
+    static void checkIsLikedFalse(boolean isLiked) {
         assertThat(isLiked)
                 .isFalse();
+    }
+
+    @Step("Поиск песни в плейлисте \"Избранное\"")
+    static void verifyExistsByPlaylistIdAndMusicId(PlaylistMusicRepository playlistMusicRepository,
+                                                   Long musicId) {
         verify(playlistMusicRepository)
-                .existsByPlaylistIdAndMusicId(FAVORITE_PLAYLIST_ID, notLikedMusicId);
+                .existsByPlaylistIdAndMusicId(FAVORITE_PLAYLIST_ID, musicId);
     }
 }
