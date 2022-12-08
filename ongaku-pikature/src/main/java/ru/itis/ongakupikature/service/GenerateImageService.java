@@ -26,7 +26,7 @@ public class GenerateImageService {
     private final FileStorage fileStorage;
 
     public String generateImage(MusicDto musicDto, User user) {
-        var neuroText = neuroTextRepository.findByMusicIdAndUser(musicDto.id(), user);
+        var neuroText = neuroTextRepository.findByUserAndMusicId(user, musicDto.id());
         var music = musicRepository.findById(musicDto.id()).orElseThrow();
 
         if (neuroText == null) {
@@ -36,7 +36,7 @@ public class GenerateImageService {
     }
 
     public String addComment(NeuroImageComment imageComment, User user) {
-        var neuroText = neuroTextRepository.findByMusicIdAndUser(imageComment.musicId(), user);
+        var neuroText = neuroTextRepository.findByUserAndMusicId(user, imageComment.musicId());
         saveUserComment(neuroText, imageComment.text());
         var loadResult = generateImageAndLoadToStorage(imageComment.text());
         if (loadResult instanceof LoadResult.Failed) {

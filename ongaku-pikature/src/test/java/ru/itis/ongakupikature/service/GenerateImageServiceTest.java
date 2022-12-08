@@ -63,9 +63,9 @@ class GenerateImageServiceTest {
 
     @BeforeEach
     void setUp() {
-        Mockito.lenient().when(neuroTextRepository.findByMusicIdAndUser(FIRST_MUSIC_ID, USER))
+        Mockito.lenient().when(neuroTextRepository.findByUserAndMusicId(USER, FIRST_MUSIC_ID))
                 .thenReturn(null);
-        Mockito.lenient().when(neuroTextRepository.findByMusicIdAndUser(SECOND_MUSIC_ID, USER))
+        Mockito.lenient().when(neuroTextRepository.findByUserAndMusicId(USER, SECOND_MUSIC_ID))
                 .thenReturn(NEURO_TEXT);
         Mockito.lenient().when(musicRepository.findById(any()))
                 .thenReturn(Optional.of(MUSIC));
@@ -197,7 +197,7 @@ class GenerateImageServiceTest {
     private static void verifyNeuroTextFindByMusicIdAndUser(NeuroTextRepository neuroTextRepository,
                                                             Long musicId) {
         verify(neuroTextRepository)
-                .findByMusicIdAndUser(musicId, USER);
+                .findByUserAndMusicId(USER, musicId);
     }
 
     @Step("Поиск песни")
