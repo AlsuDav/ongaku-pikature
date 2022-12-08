@@ -35,7 +35,7 @@ public class YouTrackIssueBuilder implements IssueBuilder {
                             test.getStory() != null ? test.getStory() : DEFAULT_VALUE,
                             test.getName(),
                             test.getStatus().getColoredStatus(),
-                            test.getStatusMessage()
+                            test.getStatusMessage().replaceAll("\n", "")
                     )
             );
         }
