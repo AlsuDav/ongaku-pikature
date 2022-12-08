@@ -33,6 +33,15 @@ class BaseControllerTest {
     @MockBean
     protected PlaylistRepository playlistRepository;
 
+    @MockBean
+    protected PlaylistMusicRepository playlistMusicRepository;
+
+    @MockBean
+    protected MusicRepository musicRepository;
+
+    @MockBean
+    protected NeuroTextRepository neuroTextRepository;
+
     @PostConstruct
     void saveUser() {
         Mockito.when(usersRepository.findByEmail(USERNAME))
