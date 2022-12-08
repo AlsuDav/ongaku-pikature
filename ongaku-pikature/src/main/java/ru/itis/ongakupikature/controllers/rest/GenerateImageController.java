@@ -19,14 +19,16 @@ public class GenerateImageController {
     @PostMapping("/neuro_image/generate")
     public String generateImage(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody MusicDto music) {
+            @RequestBody MusicDto music
+    ) {
         return generateImageService.generateImage(music, userDetails.getUser());
     }
 
     @PostMapping("/neuro_image/comment")
     public String addComment(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody NeuroImageComment imageComment) {
+            @RequestBody NeuroImageComment imageComment
+    ) {
         return generateImageService.addComment(imageComment, userDetails.getUser());
     }
 }
