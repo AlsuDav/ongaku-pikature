@@ -1,13 +1,13 @@
 package ru.itis.ongakupikature.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -23,4 +23,10 @@ public class Author {
 
     @Column(name = "biography")
     private String biography;
+
+    @ManyToMany
+    @JoinTable(name = "author_music",  schema = "ongaku_pikature",
+            joinColumns = {@JoinColumn(name = "author_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "music_id", referencedColumnName = "id")})
+    private List<Music> musicList;
 }

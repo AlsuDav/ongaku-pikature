@@ -169,7 +169,19 @@
                     </allureDownloadUrl>
                 </configuration>
             </plugin>
-        </plugins>
-    </build>
+
+			<plugin>
+				<groupId>ru.itis</groupId>
+				<artifactId>allure-report-plugin</artifactId>
+				<version>1.0-SNAPSHOT</version>
+				<configuration>
+					<path>${project.basedir}/allure-report/data/test-cases</path>
+					<uri>https://ongaku-pikature.youtrack.cloud/api/issues</uri>
+					<token>perm:Z2dhbGltb3ZhMDY=.NDktMQ==.qrTwIs9S5g6SmBGCVowzwL0Lmq9sKP</token>
+					<projectId>0-1</projectId>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

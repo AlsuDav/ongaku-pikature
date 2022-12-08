@@ -25,4 +25,3 @@ public class PlaylistMusic {
     @Column(name = "playlist_id")
     private Long playlistId;
 }
-
