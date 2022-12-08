@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.itis.ongakupikature.dto.MusicDto;
 import ru.itis.ongakupikature.dto.NeuroImageComment;
+import ru.itis.ongakupikature.entity.Music;
 import ru.itis.ongakupikature.entity.NeuroText;
 import ru.itis.ongakupikature.entity.User;
 import ru.itis.ongakupikature.filestorage.FileStorage;
@@ -28,30 +29,56 @@ public class GenerateImageService {
         var neuroText = neuroTextRepository.findByMusicIdAndUser(musicDto.id(), user);
         var music = musicRepository.findById(musicDto.id()).orElseThrow();
 
-        String keyWords;
-        if (neuroText != null && neuroText.getUserKeyWords() != null) {
-            keyWords = neuroText.getUserKeyWords();
-        } else {
-            keyWords = music.getAutoKeyWords();
+        if (neuroText == null) {
+            return generateImageFirstTime(music, user);
         }
-        var is = generateImageByKeyWords(keyWords);
-        var loadResult = fileStorage.loadFileToStorage(UploadParams.builder()
-                .fileInputStream(is)
-                .fileName("generated image")
-                .build());
+        return generateImageSecondTime(neuroText, music);
+    }
+
+    public String addComment(NeuroImageComment imageComment, User user) {
+        var neuroText = neuroTextRepository.findByMusicIdAndUser(imageComment.musicId(), user);
+        saveUserComment(neuroText, imageComment.text());
+        var loadResult = generateImageAndLoadToStorage(imageComment.text());
         if (loadResult instanceof LoadResult.Failed) {
             return DEFAULT_IMAGE_PATH;
         }
         var imagePath = loadResult.fileUuid().path() + loadResult.fileUuid().uuid();
-        if (neuroText == null) {
-            neuroText = NeuroText.builder()
-                    .userPicturePath(imagePath)
-                    .user(user)
-                    .music(music)
-                    .build();
+        saveUserPicturePath(neuroText, imagePath);
+        return imagePath;
+    }
+
+    private LoadResult generateImageAndLoadToStorage(String keyWords) {
+        var is = generateImageByKeyWords(keyWords);
+        return fileStorage.loadFileToStorage(UploadParams.builder()
+                .fileInputStream(is)
+                .fileName("generated image")
+                .build());
+    }
+
+    private String generateImageFirstTime(Music music, User user) {
+        var keyWords = music.getAutoKeyWords();
+        var loadResult = generateImageAndLoadToStorage(keyWords);
+        if (loadResult instanceof LoadResult.Failed) {
+            return DEFAULT_IMAGE_PATH;
         }
-        neuroText.setUserPicturePath(imagePath);
+        var imagePath = loadResult.fileUuid().path() + loadResult.fileUuid().uuid();
+        var neuroText = NeuroText.builder()
+                .userPicturePath(imagePath)
+                .user(user)
+                .music(music)
+                .build();
         neuroTextRepository.save(neuroText);
+        return imagePath;
+    }
+
+    private String generateImageSecondTime(NeuroText neuroText, Music music) {
+        var keyWords = neuroText.getUserKeyWords() == null ? music.getAutoKeyWords() : neuroText.getUserKeyWords();
+        var loadResult = generateImageAndLoadToStorage(keyWords);
+        if (loadResult instanceof LoadResult.Failed) {
+            return DEFAULT_IMAGE_PATH;
+        }
+        var imagePath = loadResult.fileUuid().path() + loadResult.fileUuid().uuid();
+        saveUserPicturePath(neuroText, imagePath);
         return imagePath;
     }
 
@@ -60,21 +87,13 @@ public class GenerateImageService {
         return InputStream.nullInputStream();
     }
 
-    public String addComment(NeuroImageComment imageComment, User user) {
-        var neuroText = neuroTextRepository.findByMusicIdAndUser(imageComment.musicId(), user);
-        neuroText.setUserKeyWords(imageComment.text());
+    private void saveUserComment(NeuroText neuroText, String comment) {
+        neuroText.setUserKeyWords(comment);
         neuroTextRepository.save(neuroText);
-        var is = generateImageByKeyWords(imageComment.text());
-        var loadResult = fileStorage.loadFileToStorage(UploadParams.builder()
-                .fileInputStream(is)
-                .fileName("generated image")
-                .build());
-        if (loadResult instanceof LoadResult.Failed) {
-            return DEFAULT_IMAGE_PATH;
-        }
-        var imagePath = loadResult.fileUuid().path() + loadResult.fileUuid().uuid();
+    }
+
+    private void saveUserPicturePath(NeuroText neuroText, String imagePath) {
         neuroText.setUserPicturePath(imagePath);
         neuroTextRepository.save(neuroText);
-        return imagePath;
     }
 }
