@@ -34,6 +34,9 @@ class BaseControllerTest {
     protected PlaylistRepository playlistRepository;
 
     @MockBean
+    protected PlaylistMusicRepository playlistMusicRepository;
+
+    @MockBean
     protected MusicRepository musicRepository;
 
     @MockBean

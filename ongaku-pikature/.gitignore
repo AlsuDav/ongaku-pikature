@@ -58,3 +58,5 @@ hs_err_pid*
 
 allure-results/
 allure-report/
+
+ajcore*.txt

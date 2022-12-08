@@ -6,5 +6,5 @@ import ru.itis.ongakupikature.entity.User;
 
 public interface NeuroTextRepository extends JpaRepository<NeuroText, Long> {
 
-    NeuroText findByMusicIdAndUser(Long musicId, User user);
+    NeuroText findByUserAndMusicId(User user, Long musicId);
 }
