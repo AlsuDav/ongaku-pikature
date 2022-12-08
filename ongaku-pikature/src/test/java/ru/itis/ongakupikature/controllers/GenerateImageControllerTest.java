@@ -24,7 +24,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-@Epic("Генерация картинки")
+@Epic("Генерация изображения")
 class GenerateImageControllerTest extends BaseControllerTest {
 
     private static final String IMAGE_PATH = "/path/image.png";
@@ -54,8 +54,8 @@ class GenerateImageControllerTest extends BaseControllerTest {
 
     @Test
     @Severity(value = SeverityLevel.BLOCKER)
-    @DisplayName("Получение пути изображения после генерации")
-    @Feature("Сгенерировать изображение")
+    @DisplayName("Сгенерировать изображение")
+    @Feature("Генерация изображения")
     @Story("Запрос")
     @WithUserDetails(value = USERNAME, userDetailsServiceBeanName = "customUserDetailsService")
     void generateImage() throws Exception {
@@ -71,8 +71,8 @@ class GenerateImageControllerTest extends BaseControllerTest {
 
     @Test
     @Severity(value = SeverityLevel.BLOCKER)
-    @DisplayName("Получение пути изображения после добавления комментария")
-    @Feature("Добавить комментарий к изображению")
+    @DisplayName("Добавить комментарий к изображению")
+    @Feature("Добавление комментария к изображению")
     @Story("Запрос")
     @WithUserDetails(value = USERNAME, userDetailsServiceBeanName = "customUserDetailsService")
     void addComment() throws Exception {
