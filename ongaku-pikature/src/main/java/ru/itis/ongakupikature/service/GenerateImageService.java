@@ -1,6 +1,7 @@
 package ru.itis.ongakupikature.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.itis.ongakupikature.dto.MusicDto;
 import ru.itis.ongakupikature.dto.NeuroImageComment;
@@ -19,7 +20,8 @@ import java.io.InputStream;
 @RequiredArgsConstructor
 public class GenerateImageService {
 
-    private static final String DEFAULT_IMAGE_PATH = "";
+    @Value("${profile.image.path}")
+    private String defaultImagePath;
 
     private final NeuroTextRepository neuroTextRepository;
     private final MusicRepository musicRepository;
@@ -40,7 +42,7 @@ public class GenerateImageService {
         saveUserComment(neuroText, imageComment.text());
         var loadResult = generateImageAndLoadToStorage(imageComment.text());
         if (loadResult instanceof LoadResult.Failed) {
-            return DEFAULT_IMAGE_PATH;
+            return defaultImagePath;
         }
         var imagePath = loadResult.fileUuid().path() + loadResult.fileUuid().uuid();
         saveUserPicturePath(neuroText, imagePath);
@@ -59,7 +61,7 @@ public class GenerateImageService {
         var keyWords = music.getAutoKeyWords();
         var loadResult = generateImageAndLoadToStorage(keyWords);
         if (loadResult instanceof LoadResult.Failed) {
-            return DEFAULT_IMAGE_PATH;
+            return defaultImagePath;
         }
         var imagePath = loadResult.fileUuid().path() + loadResult.fileUuid().uuid();
         var neuroText = NeuroText.builder()
@@ -75,7 +77,7 @@ public class GenerateImageService {
         var keyWords = neuroText.getUserKeyWords() == null ? music.getAutoKeyWords() : neuroText.getUserKeyWords();
         var loadResult = generateImageAndLoadToStorage(keyWords);
         if (loadResult instanceof LoadResult.Failed) {
-            return DEFAULT_IMAGE_PATH;
+            return defaultImagePath;
         }
         var imagePath = loadResult.fileUuid().path() + loadResult.fileUuid().uuid();
         saveUserPicturePath(neuroText, imagePath);
