@@ -82,20 +82,6 @@ class MusicControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @Severity(value = SeverityLevel.BLOCKER)
-    @DisplayName("Получить песни плейлиста")
-    @Feature("Песни плейлиста")
-    @Story("Запрос")
-    void getPlaylistMusic_shouldReturnAllPlaylistMusic() throws Exception {
-        given(musicService.getPlaylistMusic(1L)).willReturn(MUSIC_DTO_LIST);
-
-        var result = mvc.perform(get("/login/playlists/1"));
-
-        checkStatusOk(result);
-        checkMusicDtoList(result);
-    }
-
-    @Test
     @Severity(value = SeverityLevel.CRITICAL)
     @DisplayName("Успешный запрос на лайк")
     @Feature("Лайк")
