@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin()
                 .loginPage("/signIn")
-                .defaultSuccessUrl("/profile")
+                .defaultSuccessUrl("/welcome_page")
                 .failureUrl("/signIn?error")
                 .usernameParameter("email")  //def-username, but in our form отпр.email
                 .permitAll();

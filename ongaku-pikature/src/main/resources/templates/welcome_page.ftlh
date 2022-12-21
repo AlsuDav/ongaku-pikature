@@ -24,6 +24,10 @@
 <#--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">-->
 </head>
 <body>
+<button onclick="openNav()">
+<#--    <img class="profile_menu" src="pokeball.png"/>-->
+    Profile
+</button>
 
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
@@ -51,52 +55,20 @@
         </div>
 
 
-<#--        <div class="main-part">-->
-<#--            <div class="header">-->
-<#--                <img-->
-<#--                        alt=""-->
-<#--                        class="conect"-->
-<#--                        src="https://static.overlay-tech.com/assets/5ece3fe1-615a-49ed-8fde-c7559ecc92c3.svg"-->
-<#--                />-->
-<#--                <p class="norm_text">Привет, ${user.username}.</p>-->
-<#--                <div class="search-part">-->
-<#--                    <img-->
-<#--                            alt=""-->
-<#--                            class="serach-img"-->
-<#--                            src="https://static.overlay-tech.com/assets/10d973cf-84de-4dd1-9a20-967acd9af517.svg"-->
-<#--                    />-->
-<#--                    <p class="search-text">Buscar</p>-->
-<#--                </div>-->
-<#--            </div>-->
-<#--            <div class="playlists"></div>-->
-<#--        </div>-->
-
-
     </div>
 
 </div>
+<div id = "main">
 <#list musicList as music>
     <br>
-    ${music.name()}
+    <div>${music.name()}</div>
     <audio controls style="width:100%;max-width:600px;">
         <source src="${music.musicPath()}" type="audio/mp3">
-
     </audio>
 
 </#list>
 </div>
 
-<#--<!-- Используйте любой элемент для открытия боковой навигации &ndash;&gt;-->
-<#--<span class="navbar-toggler-icon" onclick="openNav()"> open </span>-->
-<button onclick="openNav()">
-    <img class="profile_menu" src="pokeball.png"/>
-</button>
-
-
-<!-- Добавить все содержимое страницы внутри этого div, если вы хотите, чтобы боковая навигация нажимала содержимое страницы вправо (не используется, если вы хотите, чтобы sidenav сидел поверх страницы -->
-<div id="main">
-    ...
-</div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
 </body>
