@@ -157,6 +157,66 @@ class PlaylistControllerTest extends BaseControllerTest {
         checkUserHasNotPlaylists(result);
     }
 
+    @Test
+    @Severity(value = SeverityLevel.BLOCKER)
+    @DisplayName("Успешное удаление песни из плейлиста")
+    @Feature("Удалить песню из плейлиста")
+    @Story("Запрос")
+    @WithUserDetails(value = USERNAME, userDetailsServiceBeanName = "customUserDetailsService")
+    void deletePlaylistMusic_success() throws Exception {
+        given(playlistService.deleteSongFromPlaylist(any(), any(), any())).willReturn(new ActionResult.Success());
+
+        var result = mvc.perform(delete("/login/playlists/1")
+                .param("musicId", "1"));
+
+        checkStatusOk(result);
+    }
+
+    @Test
+    @Severity(value = SeverityLevel.BLOCKER)
+    @DisplayName("Неуспешное удаление песни из плейлиста")
+    @Feature("Удалить песню из плейлиста")
+    @Story("Запрос")
+    @WithUserDetails(value = USERNAME, userDetailsServiceBeanName = "customUserDetailsService")
+    void deletePlaylistMusic_error() throws Exception {
+        given(playlistService.deleteSongFromPlaylist(any(), any(), any())).willReturn(new ActionResult.Error());
+
+        var result = mvc.perform(delete("/login/playlists/1")
+                .param("musicId", "1"));
+
+        checkStatusBadRequest(result);
+    }
+
+    @Test
+    @Severity(value = SeverityLevel.BLOCKER)
+    @DisplayName("Успешное добавление песни в плейлист")
+    @Feature("Добавить песню в плейлист")
+    @Story("Запрос")
+    @WithUserDetails(value = USERNAME, userDetailsServiceBeanName = "customUserDetailsService")
+    void addSongToPlaylist_success() throws Exception {
+        given(playlistService.addSongToPlaylist(any(), any(), any())).willReturn(new ActionResult.Success());
+
+        var result = mvc.perform(post("/login/playlists/1")
+                .param("musicId", "1"));
+
+        checkStatusOk(result);
+    }
+
+    @Test
+    @Severity(value = SeverityLevel.BLOCKER)
+    @DisplayName("Неуспешное добавление песни в плейлист")
+    @Feature("Добавить песню в плейлист")
+    @Story("Запрос")
+    @WithUserDetails(value = USERNAME, userDetailsServiceBeanName = "customUserDetailsService")
+    void addSongToPlaylist_error() throws Exception {
+        given(playlistService.addSongToPlaylist(any(), any(), any())).willReturn(new ActionResult.Error());
+
+        var result = mvc.perform(post("/login/playlists/1")
+                .param("musicId", "1"));
+
+        checkStatusBadRequest(result);
+    }
+
     @Step("У пользователя два плейлиста: \"Избранное\" и \"Плейлист 1\"")
     private void checkUserHasPlaylists(ResultActions response) throws Exception {
         response.andExpect(content().json(mapper.writeValueAsString(PLAYLIST_DTO_LIST)));
