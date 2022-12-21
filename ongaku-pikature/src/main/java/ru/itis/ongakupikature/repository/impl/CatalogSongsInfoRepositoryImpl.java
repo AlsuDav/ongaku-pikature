@@ -1,7 +1,6 @@
 package ru.itis.ongakupikature.repository.impl;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.itis.ongakupikature.dto.CatalogSongsInfoDto;
 import ru.itis.ongakupikature.repository.CatalogSongsInfoRepository;
 
@@ -27,7 +26,6 @@ public class CatalogSongsInfoRepositoryImpl implements CatalogSongsInfoRepositor
                         ON CONFLICT (music_id, author_id) DO NOTHING
             """;
 
-    @Transactional
     @Override
     public void loadAuthorsToDb(String name) {
         entityManager.createNativeQuery("insert into ongaku_pikature.author(name) VALUES (?) ON CONFLICT (name) DO NOTHING")
@@ -36,7 +34,6 @@ public class CatalogSongsInfoRepositoryImpl implements CatalogSongsInfoRepositor
     }
 
 
-    @Transactional
     @Override
     public void loadMusicToDb(CatalogSongsInfoDto.SongsInfoDto song) {
         entityManager.createNativeQuery(INSERT_MUSIC_QUERY)
