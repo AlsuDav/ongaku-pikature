@@ -1,8 +1,5 @@
 package ru.itis.ongakupikature.controllers.rest;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,17 +17,6 @@ public class MusicController {
 
     private final MusicService musicService;
 
-//    @GetMapping("/welcome_page")
-//    public List<MusicDto> getAllMusic() {
-//        return musicService.getAllMusic();
-//    }
-
-//    @GetMapping("/welcome_page")
-//    public String getWelcomePage(@AuthenticationPrincipal UserDetailsImpl user, Model model) {
-//        model.addAttribute("user", user);
-//        model.addAttribute("musicList", musicService.getAllMusic());
-//        return "welcome_page";
-//    }
 
     @GetMapping("/{login}/playlists/{id}")
     public List<MusicDto> getPlaylistMusic(

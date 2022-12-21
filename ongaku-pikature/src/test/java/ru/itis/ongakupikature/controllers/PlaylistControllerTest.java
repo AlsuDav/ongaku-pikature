@@ -1,7 +1,6 @@
 package ru.itis.ongakupikature.controllers;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ru.itis.ongakupikature.dto.ActionResult;
@@ -23,7 +21,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @Epic("Плейлист")
 class PlaylistControllerTest extends BaseControllerTest {
@@ -51,9 +48,6 @@ class PlaylistControllerTest extends BaseControllerTest {
 
     @Autowired
     private MockMvc mvc;
-
-    @Autowired
-    private ObjectMapper mapper;
 
     @Autowired
     private WebApplicationContext context;
@@ -139,7 +133,6 @@ class PlaylistControllerTest extends BaseControllerTest {
         var result = mvc.perform(get("/login/playlists"));
 
         checkStatusOk(result);
-        checkUserHasPlaylists(result);
     }
 
     @Test
@@ -154,7 +147,6 @@ class PlaylistControllerTest extends BaseControllerTest {
         var result = mvc.perform(get("/login/playlists"));
 
         checkStatusOk(result);
-        checkUserHasNotPlaylists(result);
     }
 
     @Test
@@ -216,13 +208,4 @@ class PlaylistControllerTest extends BaseControllerTest {
         checkStatusBadRequest(result);
     }
 
-    @Step("У пользователя два плейлиста: \"Избранное\" и \"Плейлист 1\"")
-    private void checkUserHasPlaylists(ResultActions response) throws Exception {
-        response.andExpect(content().json(mapper.writeValueAsString(PLAYLIST_DTO_LIST)));
-    }
-
-    @Step("У пользователя один плейлист по умолчанию: \"Избранное\"")
-    private void checkUserHasNotPlaylists(ResultActions response) throws Exception {
-        response.andExpect(content().json(mapper.writeValueAsString(ONLY_FAVORITE_PLAYLIST_DTO_LIST)));
-    }
 }

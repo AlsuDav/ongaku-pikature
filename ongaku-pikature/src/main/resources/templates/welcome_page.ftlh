@@ -37,12 +37,12 @@
             <#if user??>
                 <p class="user-name">${user.getUser().login}</p>
 
-                <a class="buttons" href='#' >My playlists</a>
-                <a class="buttons" href='#' >Logout</a>
+                <a class="buttons" href="/${user.getUser().login}/playlists" >My playlists</a>
+                <a class="buttons" href='/logout' >Logout</a>
             <#else >
                 <p class="user-name">Anonimous</p>
-                <a class="buttons" href='#' >Sign in</a>
-                <a class="buttons" href='#' >Sign Up</a>
+                <a class="buttons" href='/signIn' >Sign in</a>
+                <a class="buttons" href='/signUp' >Sign Up</a>
             </#if>
             <hr>
 
@@ -74,6 +74,16 @@
 
     </div>
 
+</div>
+<#list musicList as music>
+    <br>
+    ${music.name()}
+    <audio controls style="width:100%;max-width:600px;">
+        <source src="${music.musicPath()}" type="audio/mp3">
+
+    </audio>
+
+</#list>
 </div>
 
 <#--<!-- Используйте любой элемент для открытия боковой навигации &ndash;&gt;-->

@@ -6,25 +6,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.ongakupikature.dto.ActionResult;
-import ru.itis.ongakupikature.dto.PlaylistDto;
 import ru.itis.ongakupikature.security.UserDetailsImpl;
 import ru.itis.ongakupikature.service.PlaylistService;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class PlaylistController {
 
     private final PlaylistService playlistService;
-
-    @GetMapping("/{login}/playlists")
-    public List<PlaylistDto> getUserPlaylists(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable String login
-    ) {
-        return playlistService.getUserPlaylists(userDetails.getUser());
-    }
 
     @PostMapping("/{login}/playlists")
     public ResponseEntity<Void> createUserPlaylist(

@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/users/**").hasAuthority("ADMIN")
-                .antMatchers("/loadSongsToDB").hasAuthority("ADMIN")
+                .antMatchers("/loadSongsToDB").permitAll()
                 .antMatchers("/").permitAll()
 //                .antMatchers("/resources/**", "/assets/**", "/css/**", "/js/**").permitAll()
                 .antMatchers("/profile/**").authenticated()
