@@ -14,7 +14,12 @@ import ru.itis.ongakupikature.filestorage.dto.UploadParams;
 import ru.itis.ongakupikature.repository.MusicRepository;
 import ru.itis.ongakupikature.repository.NeuroTextRepository;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +27,9 @@ public class GenerateImageService {
 
     @Value("${profile.image.path}")
     private String defaultImagePath;
+
+    @Value("${image.generation.url}")
+    private String imageGenerationUrl;
 
     private final NeuroTextRepository neuroTextRepository;
     private final MusicRepository musicRepository;
@@ -84,9 +92,19 @@ public class GenerateImageService {
         return imagePath;
     }
 
-    // TODO add image generation
     private InputStream generateImageByKeyWords(String keyWords) {
-        return InputStream.nullInputStream();
+        keyWords = keyWords.replace(" ", "%20");
+        var client = HttpClient.newHttpClient();
+        var request = HttpRequest.newBuilder()
+                .uri(URI.create(imageGenerationUrl.formatted(keyWords)))
+                .GET()
+                .build();
+        try {
+            var response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+            return response.body();
+        } catch (InterruptedException | IOException e) {
+            return InputStream.nullInputStream();
+        }
     }
 
     private void saveUserComment(NeuroText neuroText, String comment) {
