@@ -67,12 +67,12 @@ public class PlaylistController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PostMapping("/{login}/playlists/{id}")
+    @PostMapping("/{login}/playlists/{id}/{musicId}")
     public ResponseEntity<Void> addPlaylistMusic(
             Authentication authentication,
             @PathVariable String login,
             @PathVariable("id") Long playlistsId,
-            @RequestParam("musicId") Long musicId
+            @PathVariable("musicId") Long musicId
     ) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         var result = playlistService.addSongToPlaylist(userDetails.getUser(), playlistsId, musicId);
