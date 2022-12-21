@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.itis.ongakupikature.entity.User;
 import ru.itis.ongakupikature.repository.*;
+import ru.itis.ongakupikature.repository.impl.CatalogSongsInfoRepositoryImpl;
 
 import javax.annotation.PostConstruct;
 import java.util.Optional;
@@ -41,6 +42,9 @@ class BaseControllerTest {
 
     @MockBean
     protected NeuroTextRepository neuroTextRepository;
+
+    @MockBean
+    protected CatalogSongsInfoRepositoryImpl catalogSongsInfoRepository;
 
     @PostConstruct
     void saveUser() {

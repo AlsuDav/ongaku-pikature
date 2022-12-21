@@ -166,8 +166,7 @@ class PlaylistControllerTest extends BaseControllerTest {
     void deletePlaylistMusic_success() throws Exception {
         given(playlistService.deleteSongFromPlaylist(any(), any(), any())).willReturn(new ActionResult.Success());
 
-        var result = mvc.perform(delete("/login/playlists/1")
-                .param("musicId", "1"));
+        var result = mvc.perform(delete("/login/playlists/1/1"));
 
         checkStatusOk(result);
     }

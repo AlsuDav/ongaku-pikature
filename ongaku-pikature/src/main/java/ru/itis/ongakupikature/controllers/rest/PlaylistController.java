@@ -52,12 +52,12 @@ public class PlaylistController {
         return ResponseEntity.badRequest().build();
     }
 
-    @DeleteMapping("/{login}/playlists/{id}")
+    @DeleteMapping("/{login}/playlists/{id}/{musicId}")
     public ResponseEntity<Void> deletePlaylistMusic(
             Authentication authentication,
             @PathVariable String login,
             @PathVariable("id") Long playlistsId,
-            @RequestParam("musicId") Long musicId
+            @PathVariable("musicId") Long musicId
     ) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         var result = playlistService.deleteSongFromPlaylist(userDetails.getUser(), playlistsId, musicId);
