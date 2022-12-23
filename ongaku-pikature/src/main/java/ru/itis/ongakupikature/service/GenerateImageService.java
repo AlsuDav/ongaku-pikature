@@ -3,6 +3,7 @@ package ru.itis.ongakupikature.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.itis.ongakupikature.api.ImageGeneration;
 import ru.itis.ongakupikature.dto.MusicDto;
 import ru.itis.ongakupikature.dto.NeuroImageComment;
 import ru.itis.ongakupikature.entity.Music;
@@ -14,13 +15,6 @@ import ru.itis.ongakupikature.filestorage.dto.UploadParams;
 import ru.itis.ongakupikature.repository.MusicRepository;
 import ru.itis.ongakupikature.repository.NeuroTextRepository;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-
 @Service
 @RequiredArgsConstructor
 public class GenerateImageService {
@@ -28,12 +22,10 @@ public class GenerateImageService {
     @Value("${profile.image.path}")
     private String defaultImagePath;
 
-    @Value("${image.generation.url}")
-    private String imageGenerationUrl;
-
     private final NeuroTextRepository neuroTextRepository;
     private final MusicRepository musicRepository;
     private final FileStorage fileStorage;
+    private final ImageGeneration imageGeneration;
 
     public String generateImage(MusicDto musicDto, User user) {
         var neuroText = neuroTextRepository.findByUserAndMusicId(user, musicDto.id());
@@ -58,7 +50,7 @@ public class GenerateImageService {
     }
 
     private LoadResult generateImageAndLoadToStorage(String keyWords) {
-        var is = generateImageByKeyWords(keyWords);
+        var is = imageGeneration.generateImageByKeyWords(keyWords);
         return fileStorage.loadFileToStorage(UploadParams.builder()
                 .fileInputStream(is)
                 .fileName("generated image")
@@ -90,21 +82,6 @@ public class GenerateImageService {
         var imagePath = loadResult.fileUuid().path() + loadResult.fileUuid().uuid();
         saveUserPicturePath(neuroText, imagePath);
         return imagePath;
-    }
-
-    private InputStream generateImageByKeyWords(String keyWords) {
-        keyWords = keyWords.replace(" ", "%20");
-        var client = HttpClient.newHttpClient();
-        var request = HttpRequest.newBuilder()
-                .uri(URI.create(imageGenerationUrl.formatted(keyWords)))
-                .GET()
-                .build();
-        try {
-            var response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
-            return response.body();
-        } catch (InterruptedException | IOException e) {
-            return InputStream.nullInputStream();
-        }
     }
 
     private void saveUserComment(NeuroText neuroText, String comment) {
