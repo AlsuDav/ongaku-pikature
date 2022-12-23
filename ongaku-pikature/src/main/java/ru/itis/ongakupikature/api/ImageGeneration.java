@@ -27,6 +27,9 @@ public class ImageGeneration {
                 .build();
         try {
             var response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+            if (response.statusCode() != 200) {
+                return InputStream.nullInputStream();
+            }
             return response.body();
         } catch (InterruptedException | IOException e) {
             return InputStream.nullInputStream();
