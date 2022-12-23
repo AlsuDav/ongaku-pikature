@@ -3,6 +3,7 @@ package ru.itis.ongakupikature.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.itis.ongakupikature.api.ImageGeneration;
 import ru.itis.ongakupikature.dto.MusicDto;
 import ru.itis.ongakupikature.dto.NeuroImageComment;
 import ru.itis.ongakupikature.entity.Music;
@@ -14,8 +15,6 @@ import ru.itis.ongakupikature.filestorage.dto.UploadParams;
 import ru.itis.ongakupikature.repository.MusicRepository;
 import ru.itis.ongakupikature.repository.NeuroTextRepository;
 
-import java.io.InputStream;
-
 @Service
 @RequiredArgsConstructor
 public class GenerateImageService {
@@ -26,6 +25,7 @@ public class GenerateImageService {
     private final NeuroTextRepository neuroTextRepository;
     private final MusicRepository musicRepository;
     private final FileStorage fileStorage;
+    private final ImageGeneration imageGeneration;
 
     public String generateImage(MusicDto musicDto, User user) {
         var neuroText = neuroTextRepository.findByUserAndMusicId(user, musicDto.id());
@@ -50,7 +50,7 @@ public class GenerateImageService {
     }
 
     private LoadResult generateImageAndLoadToStorage(String keyWords) {
-        var is = generateImageByKeyWords(keyWords);
+        var is = imageGeneration.generateImageByKeyWords(keyWords);
         return fileStorage.loadFileToStorage(UploadParams.builder()
                 .fileInputStream(is)
                 .fileName("generated image")
@@ -82,11 +82,6 @@ public class GenerateImageService {
         var imagePath = loadResult.fileUuid().path() + loadResult.fileUuid().uuid();
         saveUserPicturePath(neuroText, imagePath);
         return imagePath;
-    }
-
-    // TODO add image generation
-    private InputStream generateImageByKeyWords(String keyWords) {
-        return InputStream.nullInputStream();
     }
 
     private void saveUserComment(NeuroText neuroText, String comment) {
