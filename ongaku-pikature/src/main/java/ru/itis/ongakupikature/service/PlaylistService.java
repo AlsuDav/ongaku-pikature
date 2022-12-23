@@ -20,6 +20,11 @@ public class PlaylistService {
     private final PlaylistRepository playlistRepository;
     private final MusicRepository musicRepository;
 
+    public PlaylistDto getPlaylistById(Long id) {
+        var playlist = playlistRepository.findById(id);
+        return playlist.map(this::toDto).orElse(null);
+    }
+
     public List<PlaylistDto> getUserPlaylists(User user) {
         var playlists = playlistRepository.findAllByUser(user);
         return playlists.stream()

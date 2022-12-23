@@ -65,7 +65,12 @@
     <audio controls style="width:100%;max-width:600px;">
         <source src="${music.musicPath()}" type="audio/mp3">
     </audio>
-
+    <#if user??>
+    <form action="/song/${music.id()}/like?isLike=true" method="post"
+          class="form-horizontal">
+        <button type="submit" class="btn btn-outline-danger btn-sm" value="Like">Like</button>
+    </form>
+    </#if>
 </#list>
 </div>
 

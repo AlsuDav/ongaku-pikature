@@ -5,26 +5,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.ongakupikature.dto.MusicMoreData;
-import ru.itis.ongakupikature.dto.MusicDto;
 import ru.itis.ongakupikature.service.MusicService;
 import ru.itis.ongakupikature.security.UserDetailsImpl;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class MusicController {
 
     private final MusicService musicService;
-
-
-    @GetMapping("/{login}/playlists/{id}")
-    public List<MusicDto> getPlaylistMusic(
-            @PathVariable String login,
-            @PathVariable("id") Long playlistsId
-    ) {
-        return musicService.getPlaylistMusic(playlistsId);
-    }
 
     @PostMapping("/song/{id}/like")
     public ResponseEntity<Void> manageLike(

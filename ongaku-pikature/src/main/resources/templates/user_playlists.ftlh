@@ -1,9 +1,7 @@
 ${user.getUser().login}
 
-<#list userPlaylists as music>
+<#list userPlaylists as playlist>
     <br>
-    <div>${music.name()}</div>
-    count: ${music.songCount()}
-
-
+    count: ${playlist.songCount()}
+    <a class="buttons" href="/${user.getUser().login}/playlists/${playlist.id()}">${playlist.name()}</a>
 </#list>

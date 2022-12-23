@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.itis.ongakupikature.security.UserDetailsImpl;
+import ru.itis.ongakupikature.service.MusicService;
 import ru.itis.ongakupikature.service.PlaylistService;
 
 @Controller
@@ -14,6 +15,8 @@ import ru.itis.ongakupikature.service.PlaylistService;
 public class PlaylistControllerPage {
 
     private final PlaylistService playlistService;
+    private final MusicService musicService;
+
 
     @GetMapping("/{login}/playlists")
     public String getUserPlaylists(
@@ -26,5 +29,17 @@ public class PlaylistControllerPage {
         model.addAttribute("userPlaylists", userPlaylists);
         model.addAttribute("user", userDetails);
         return "user_playlists";
+    }
+    @GetMapping("/{login}/playlists/{id}")
+    public String getPlaylistMusic(
+            @PathVariable String login,
+            @PathVariable("id") Long playlistsId,
+            @AuthenticationPrincipal UserDetailsImpl user,
+            Model model
+    ) {
+        model.addAttribute("playlistMusic", musicService.getPlaylistMusic(playlistsId));
+        model.addAttribute("user", user);
+        model.addAttribute("playlistInfo", playlistService.getPlaylistById(playlistsId));
+        return "playlist";
     }
 }
