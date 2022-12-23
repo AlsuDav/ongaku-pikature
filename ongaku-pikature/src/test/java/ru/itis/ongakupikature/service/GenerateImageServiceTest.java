@@ -1,9 +1,6 @@
 package ru.itis.ongakupikature.service;
 
-import io.qameta.allure.Epic;
-import io.qameta.allure.Feature;
-import io.qameta.allure.Step;
-import io.qameta.allure.Story;
+import io.qameta.allure.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+import ru.itis.ongakupikature.api.ImageGeneration;
 import ru.itis.ongakupikature.dto.MusicDto;
 import ru.itis.ongakupikature.dto.NeuroImageComment;
 import ru.itis.ongakupikature.entity.Music;
@@ -23,6 +22,10 @@ import ru.itis.ongakupikature.filestorage.dto.LoadResult;
 import ru.itis.ongakupikature.repository.MusicRepository;
 import ru.itis.ongakupikature.repository.NeuroTextRepository;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,8 +49,8 @@ class GenerateImageServiceTest {
     private static final MusicDto FIRST_MUSIC = MusicDto.builder()
             .id(FIRST_MUSIC_ID)
             .build();
-    private static final String IMAGE_PATH = "/path/image.png";
-    private static final FileUuid FILE_UUID = new FileUuid("image.png", "/path/");
+    private static final String IMAGE_PATH = "src/test/resources/notDefaultSongPoster.jpg";
+    private static final FileUuid FILE_UUID = new FileUuid("notDefaultSongPoster.jpg", "src/test/resources/");
 
     @Mock
     private NeuroTextRepository neuroTextRepository;
@@ -58,11 +61,17 @@ class GenerateImageServiceTest {
     @Mock
     private FileStorage fileStorage;
 
+    @Mock
+    private ImageGeneration imageGeneration;
+
     @InjectMocks
     private GenerateImageService generateImageService;
 
     @BeforeEach
     void setUp() {
+        ReflectionTestUtils.setField(generateImageService, "defaultImagePath", "src/test/resources/defaultSongPoster.png");
+        Mockito.lenient().when(imageGeneration.generateImageByKeyWords(any()))
+                        .thenReturn(InputStream.nullInputStream());
         Mockito.lenient().when(neuroTextRepository.findByUserAndMusicId(USER, FIRST_MUSIC_ID))
                 .thenReturn(null);
         Mockito.lenient().when(neuroTextRepository.findByUserAndMusicId(USER, SECOND_MUSIC_ID))
@@ -75,7 +84,7 @@ class GenerateImageServiceTest {
     @DisplayName("Ошибка загрузки изображения после первой генерации")
     @Feature("Генерация изображения")
     @Story("Метод")
-    void generateImage_firstTimeWithDefaultPath() {
+    void generateImage_firstTimeWithDefaultPath() throws IOException {
         given(fileStorage.loadFileToStorage(any()))
                 .willReturn(new LoadResult.Failed.FileNotLoaded(""));
         var imagePath = generateImageService.generateImage(FIRST_MUSIC, USER);
@@ -90,7 +99,7 @@ class GenerateImageServiceTest {
     @DisplayName("Успешная первая генерация изображения")
     @Feature("Генерация изображения")
     @Story("Метод")
-    void generateImage_firstTimeWithImagePath() {
+    void generateImage_firstTimeWithImagePath() throws IOException {
         given(fileStorage.loadFileToStorage(any()))
                 .willReturn(new LoadResult.Success(FILE_UUID));
         var imagePath = generateImageService.generateImage(FIRST_MUSIC, USER);
@@ -106,7 +115,7 @@ class GenerateImageServiceTest {
     @DisplayName("Ошибка загрузки изображения после повторной генерации")
     @Feature("Генерация изображения")
     @Story("Метод")
-    void generateImage_secondTimeWithDefaultPath() {
+    void generateImage_secondTimeWithDefaultPath() throws IOException {
         given(fileStorage.loadFileToStorage(any()))
                 .willReturn(new LoadResult.Failed.FileNotLoaded(""));
         var imagePath = generateImageService.generateImage(
@@ -126,7 +135,7 @@ class GenerateImageServiceTest {
     @DisplayName("Успешная повторная генерация")
     @Feature("Генерация изображения")
     @Story("Метод")
-    void generateImage_secondTimeWithNotDefaultPath() {
+    void generateImage_secondTimeWithNotDefaultPath() throws IOException {
         given(fileStorage.loadFileToStorage(any()))
                 .willReturn(new LoadResult.Success(FILE_UUID));
         var imagePath = generateImageService.generateImage(
@@ -147,7 +156,7 @@ class GenerateImageServiceTest {
     @DisplayName("Ошибка загрузки изображения после добавления комментария")
     @Feature("Добавление комментария к изображению")
     @Story("Метод")
-    void addComment_loadImageError() {
+    void addComment_loadImageError() throws IOException {
         given(fileStorage.loadFileToStorage(any()))
                 .willReturn(new LoadResult.Failed.FileNotLoaded(""));
 
@@ -166,7 +175,7 @@ class GenerateImageServiceTest {
     @DisplayName("Успешное добавление комментария")
     @Feature("Добавление комментария к изображению")
     @Story("Метод")
-    void addComment_success() {
+    void addComment_success() throws IOException {
         given(fileStorage.loadFileToStorage(any()))
                 .willReturn(new LoadResult.Success(FILE_UUID));
 
@@ -182,15 +191,17 @@ class GenerateImageServiceTest {
     }
 
     @Step("Получен дефолтный путь до изображения")
-    private static void checkImagePathIsDefault(String imagePath) {
+    private static void checkImagePathIsDefault(String imagePath) throws IOException {
         assertThat(imagePath)
                 .isNotEqualTo(IMAGE_PATH);
+        getBytes(imagePath);
     }
 
     @Step("Получен сохраненного путь до изображения")
-    private static void checkImagePathIsNotDefault(String imagePath) {
+    private static void checkImagePathIsNotDefault(String imagePath) throws IOException {
         assertThat(imagePath)
                 .isEqualTo(IMAGE_PATH);
+        getBytes(imagePath);
     }
 
     @Step("Поиск уже сгенерированного изображения для пользователя")
@@ -229,5 +240,10 @@ class GenerateImageServiceTest {
     private static void verifyNeuroTextSaveComment(NeuroTextRepository neuroTextRepository) {
         verify(neuroTextRepository)
                 .save(any());
+    }
+
+    @Attachment(value = "Полученное изображение", type = "image/jpeg", fileExtension = ".jpg")
+    public static byte[] getBytes(String filename) throws IOException {
+        return Files.readAllBytes(Paths.get(filename));
     }
 }

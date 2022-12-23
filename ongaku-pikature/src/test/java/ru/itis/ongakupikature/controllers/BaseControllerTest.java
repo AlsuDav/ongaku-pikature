@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class BaseControllerTest {
+public class BaseControllerTest {
 
     protected static final String USERNAME = "email";
     protected static final User USER = User.builder()

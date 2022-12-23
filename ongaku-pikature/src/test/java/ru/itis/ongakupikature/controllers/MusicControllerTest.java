@@ -80,7 +80,6 @@ class MusicControllerTest extends BaseControllerTest {
         checkStatusOk(result);
     }
 
-
     @Test
     @Severity(value = SeverityLevel.CRITICAL)
     @DisplayName("Успешный запрос на лайк")
