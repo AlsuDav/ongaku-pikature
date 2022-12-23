@@ -38,6 +38,11 @@ public class MusicService {
                 .toList();
     }
 
+    public MusicDto getMusicById(Long id) {
+        var music = musicRepository.findById(id);
+        return music.map(this::toDto).orElse(null);
+    }
+
     public boolean setLike(User user, Long musicId, boolean isLike) {
         try {
             if (isLike) {
