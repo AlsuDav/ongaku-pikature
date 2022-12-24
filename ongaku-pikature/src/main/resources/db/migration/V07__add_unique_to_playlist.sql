@@ -1,0 +1,1 @@
+ALTER TABLE ongaku_pikature.playlist_music ADD CONSTRAINT unique_music_in_playlist UNIQUE (music_id, playlist_id);

@@ -125,7 +125,6 @@ class MusicControllerTest extends BaseControllerTest {
         var result = mvc.perform(get("/song/1"));
 
         checkStatusOk(result);
-        checkMusicMoreDto(result, musicMoreData);
     }
 
     @Step("Лист песен совпадают с ожидаемым")

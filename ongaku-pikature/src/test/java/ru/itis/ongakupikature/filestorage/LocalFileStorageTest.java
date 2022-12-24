@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 class LocalFileStorageTest {
 
     private final LocalFileStorage fileStorage = new LocalFileStorage();
+    private static final String FOLDER = System.getProperty("user.dir") + "/target/classes/static" + File.separator ;
 
     @Test
     @Severity(value = SeverityLevel.CRITICAL)
@@ -29,7 +30,7 @@ class LocalFileStorageTest {
     @Feature("Работы с пользовательскими файлами")
     @Story("Чтение файла")
     void readFileFromStorage_success() throws IOException {
-        var file = File.createTempFile("test", "");
+        var file = File.createTempFile("file", ".png", new File(FOLDER));
         file.deleteOnExit();
         var readInfo = fileStorage.readFileFromStorage(new FileUuid(file.getName(), "/"));
 
@@ -67,7 +68,7 @@ class LocalFileStorageTest {
         resultNotNull(fileName);
         checkFilename("file", fileName);
 
-        var file = new File(System.getProperty("java.io.tmpdir") + File.separator + fileName);
+        var file = new File(FOLDER+ fileName);
         file.deleteOnExit();
         checkFileContent(bytes, fileName);
     }
@@ -99,7 +100,7 @@ class LocalFileStorageTest {
 
     @Step("Проверка содержимого файла")
     private static void checkFileContent(byte[] expected, String filename) throws IOException {
-        var file = new File(System.getProperty("java.io.tmpdir") + File.separator + filename);
+        var file = new File(System.getProperty("user.dir") + "/target/classes/static" + File.separator + filename);
         assertArrayEquals(expected, Files.readAllBytes(file.toPath()));
         getBytes(filename);
     }
@@ -112,7 +113,7 @@ class LocalFileStorageTest {
 
     @Attachment(value = "Вложение", type = "plain/text", fileExtension = ".txt")
     public static byte[] getBytes(String filename) throws IOException {
-        return Files.readAllBytes(Paths.get(System.getProperty("java.io.tmpdir"), filename));
+        return Files.readAllBytes(Paths.get(FOLDER, filename));
     }
 
     @Attachment(value = "Вложение", type = "plain/text", fileExtension = ".txt")

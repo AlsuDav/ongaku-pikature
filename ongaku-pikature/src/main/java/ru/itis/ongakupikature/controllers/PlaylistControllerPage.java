@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import ru.itis.ongakupikature.dto.MusicDto;
 import ru.itis.ongakupikature.security.UserDetailsImpl;
 import ru.itis.ongakupikature.service.MusicService;
 import ru.itis.ongakupikature.service.PlaylistService;
@@ -40,6 +41,8 @@ public class PlaylistControllerPage {
         model.addAttribute("playlistMusic", musicService.getPlaylistMusic(playlistsId));
         model.addAttribute("user", user);
         model.addAttribute("playlistInfo", playlistService.getPlaylistById(playlistsId));
+        var favouriteMusic = musicService.getPlaylistMusic(user.getUser().getFavoritePlaylistId());
+        model.addAttribute("favouriteMusicIds", favouriteMusic.stream().map(MusicDto::id).toList());
         return "playlist";
     }
 }

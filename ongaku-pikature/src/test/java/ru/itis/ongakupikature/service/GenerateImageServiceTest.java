@@ -51,7 +51,7 @@ class GenerateImageServiceTest {
             .build();
     private static final String IMAGE_PATH = "src/test/resources/notDefaultSongPoster.jpg";
     private static final FileUuid FILE_UUID = new FileUuid("notDefaultSongPoster.jpg", "src/test/resources/");
-
+    private static final String SRC_PATH = "src/test/resources/";
     @Mock
     private NeuroTextRepository neuroTextRepository;
 
@@ -71,7 +71,7 @@ class GenerateImageServiceTest {
     void setUp() {
         ReflectionTestUtils.setField(generateImageService, "defaultImagePath", "src/test/resources/defaultSongPoster.png");
         Mockito.lenient().when(imageGeneration.generateImageByKeyWords(any()))
-                        .thenReturn(InputStream.nullInputStream());
+                .thenReturn(InputStream.nullInputStream());
         Mockito.lenient().when(neuroTextRepository.findByUserAndMusicId(USER, FIRST_MUSIC_ID))
                 .thenReturn(null);
         Mockito.lenient().when(neuroTextRepository.findByUserAndMusicId(USER, SECOND_MUSIC_ID))
@@ -87,7 +87,7 @@ class GenerateImageServiceTest {
     void generateImage_firstTimeWithDefaultPath() throws IOException {
         given(fileStorage.loadFileToStorage(any()))
                 .willReturn(new LoadResult.Failed.FileNotLoaded(""));
-        var imagePath = generateImageService.generateImage(FIRST_MUSIC, USER);
+        var imagePath = generateImageService.generateImage(FIRST_MUSIC.id(), USER);
 
         verifyNeuroTextFindByMusicIdAndUser(neuroTextRepository, FIRST_MUSIC_ID);
         verifyMusicFindById(musicRepository, FIRST_MUSIC_ID);
@@ -102,7 +102,7 @@ class GenerateImageServiceTest {
     void generateImage_firstTimeWithImagePath() throws IOException {
         given(fileStorage.loadFileToStorage(any()))
                 .willReturn(new LoadResult.Success(FILE_UUID));
-        var imagePath = generateImageService.generateImage(FIRST_MUSIC, USER);
+        var imagePath = SRC_PATH + generateImageService.generateImage(FIRST_MUSIC.id(), USER);
 
         verifyNeuroTextFindByMusicIdAndUser(neuroTextRepository, FIRST_MUSIC_ID);
         verifyMusicFindById(musicRepository, FIRST_MUSIC_ID);
@@ -119,9 +119,9 @@ class GenerateImageServiceTest {
         given(fileStorage.loadFileToStorage(any()))
                 .willReturn(new LoadResult.Failed.FileNotLoaded(""));
         var imagePath = generateImageService.generateImage(
-                MusicDto.builder()
-                        .id(SECOND_MUSIC_ID)
-                        .build(),
+
+                SECOND_MUSIC_ID,
+
                 USER
         );
 
@@ -138,10 +138,8 @@ class GenerateImageServiceTest {
     void generateImage_secondTimeWithNotDefaultPath() throws IOException {
         given(fileStorage.loadFileToStorage(any()))
                 .willReturn(new LoadResult.Success(FILE_UUID));
-        var imagePath = generateImageService.generateImage(
-                MusicDto.builder()
-                        .id(SECOND_MUSIC_ID)
-                        .build(),
+        var imagePath = SRC_PATH + generateImageService.generateImage(
+                SECOND_MUSIC_ID,
                 USER
         );
 
@@ -179,7 +177,7 @@ class GenerateImageServiceTest {
         given(fileStorage.loadFileToStorage(any()))
                 .willReturn(new LoadResult.Success(FILE_UUID));
 
-        var imagePath = generateImageService.addComment(
+        var imagePath = SRC_PATH + generateImageService.addComment(
                 new NeuroImageComment(SECOND_MUSIC_ID, "comment"),
                 USER
         );

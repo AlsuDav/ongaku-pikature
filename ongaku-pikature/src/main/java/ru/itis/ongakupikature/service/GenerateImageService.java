@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.itis.ongakupikature.api.ImageGeneration;
-import ru.itis.ongakupikature.dto.MusicDto;
 import ru.itis.ongakupikature.dto.NeuroImageComment;
 import ru.itis.ongakupikature.entity.Music;
 import ru.itis.ongakupikature.entity.NeuroText;
@@ -27,9 +26,9 @@ public class GenerateImageService {
     private final FileStorage fileStorage;
     private final ImageGeneration imageGeneration;
 
-    public String generateImage(MusicDto musicDto, User user) {
-        var neuroText = neuroTextRepository.findByUserAndMusicId(user, musicDto.id());
-        var music = musicRepository.findById(musicDto.id()).orElseThrow();
+    public String generateImage(Long musicId , User user) {
+        var neuroText = neuroTextRepository.findByUserAndMusicId(user, musicId);
+        var music = musicRepository.findById(musicId).orElseThrow();
 
         if (neuroText == null) {
             return generateImageFirstTime(music, user);
@@ -44,7 +43,7 @@ public class GenerateImageService {
         if (loadResult instanceof LoadResult.Failed) {
             return defaultImagePath;
         }
-        var imagePath = loadResult.fileUuid().path() + loadResult.fileUuid().uuid();
+        var imagePath = loadResult.fileUuid().uuid();
         saveUserPicturePath(neuroText, imagePath);
         return imagePath;
     }
@@ -63,7 +62,7 @@ public class GenerateImageService {
         if (loadResult instanceof LoadResult.Failed) {
             return defaultImagePath;
         }
-        var imagePath = loadResult.fileUuid().path() + loadResult.fileUuid().uuid();
+        var imagePath = loadResult.fileUuid().uuid();
         var neuroText = NeuroText.builder()
                 .userPicturePath(imagePath)
                 .user(user)
@@ -79,7 +78,7 @@ public class GenerateImageService {
         if (loadResult instanceof LoadResult.Failed) {
             return defaultImagePath;
         }
-        var imagePath = loadResult.fileUuid().path() + loadResult.fileUuid().uuid();
+        var imagePath =  loadResult.fileUuid().uuid();
         saveUserPicturePath(neuroText, imagePath);
         return imagePath;
     }

@@ -59,7 +59,7 @@ public class MusicService {
     public MusicMoreData getMusicData(User user, Long musicId) {
         var neuroText = neuroTextRepository.findByUserAndMusicId(user, musicId);
         var isLiked = likeService.isLiked(user, musicId);
-        return new MusicMoreData(isLiked, neuroText.getUserPicturePath());
+        return new MusicMoreData(isLiked, neuroText == null ? null : neuroText.getUserPicturePath());
     }
 
     private MusicDto toDto(Music music) {

@@ -59,9 +59,9 @@ class GenerateImageControllerTest extends BaseControllerTest {
     @Story("Запрос")
     @WithUserDetails(value = USERNAME, userDetailsServiceBeanName = "customUserDetailsService")
     void generateImage() throws Exception {
-        given(generateImageService.generateImage(eq(MUSIC_DTO), any())).willReturn(IMAGE_PATH);
+        given(generateImageService.generateImage(eq(MUSIC_DTO.id()), any())).willReturn(IMAGE_PATH);
 
-        var result = mvc.perform(post("/neuro_image/generate")
+        var result = mvc.perform(post("/neuro_image/generate/" + MUSIC_DTO.id())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(MUSIC_DTO)));
 

@@ -2,6 +2,7 @@ package ru.itis.ongakupikature.controllers.rest;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,12 +17,13 @@ public class GenerateImageController {
 
     private final GenerateImageService generateImageService;
 
-    @PostMapping("/neuro_image/generate")
+    @PostMapping("/neuro_image/generate/{id}")
     public String generateImage(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody MusicDto music
+            @PathVariable("id") Long musicId,
+            MusicDto music
     ) {
-        return generateImageService.generateImage(music, userDetails.getUser());
+        return generateImageService.generateImage(musicId, userDetails.getUser());
     }
 
     @PostMapping("/neuro_image/comment")

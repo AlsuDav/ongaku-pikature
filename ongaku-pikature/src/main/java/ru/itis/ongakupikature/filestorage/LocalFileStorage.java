@@ -16,8 +16,8 @@ import java.nio.file.StandardCopyOption;
 @Component
 public class LocalFileStorage implements FileStorage {
 
-    private static final String FOLDER = System.getProperty("java.io.tmpdir") + File.separator;
 
+    private static final String FOLDER = System.getProperty("user.dir") + "/target/classes/static" + File.separator ;
     @Override
     public ReadResult readFileFromStorage(FileUuid fileUuid) {
         var file = new File(FOLDER + fileUuid.uuid());
@@ -32,7 +32,7 @@ public class LocalFileStorage implements FileStorage {
     @Override
     public LoadResult loadFileToStorage(UploadParams uploadParams) {
         try (var is = uploadParams.fileInputStream()) {
-            var file = File.createTempFile("file", "");
+            var file = File.createTempFile("file", ".png", new File(FOLDER));
             file.deleteOnExit();
             Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
             return new LoadResult.Success(new FileUuid(file.getName(), FOLDER));
