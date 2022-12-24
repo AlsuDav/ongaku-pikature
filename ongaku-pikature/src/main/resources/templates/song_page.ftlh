@@ -150,6 +150,10 @@ ${user.login}
 <#--        <button type="submit" class="btn btn-outline-danger btn-sm" value="Generate image">Generate Image</button>-->
 <#--    </form>-->
     <button class="music-generate" music_id="${musicMainData.id()}">Generate image</button>
+
+
+<#--    add comment-->
+
 </#if>
 </#if>
 </body>

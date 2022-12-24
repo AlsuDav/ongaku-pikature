@@ -176,8 +176,22 @@
             }
             var style = 'style="background-color: ' + color
             // document.write(style)
-            document.write('<button class="like"' +style+' data-id=' + ${music.id()} + '>like</button>')
+            document.write('<button class="like"' + style + ' data-id=' + ${music.id()} + '>like</button>')
         </script>
+
+    <#--тут добавление музыки в плейлист-->
+        <form method="post" action="/${user.getUser().login}/playlists/${music.id()}" >
+            <p><label>
+                    <select name="playlistsId" id="" autofocus>
+                        <#list userPlaylists as playlist>
+                            <option value="${playlist.id()}">${playlist.name()}</option>
+                        </#list>
+                    </select>
+                </label>
+            </p>
+            <p><input type="submit" value="Add to playlist"></p>
+        </form>
+
 
 
     </#if>

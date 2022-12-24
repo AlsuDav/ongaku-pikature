@@ -73,6 +73,11 @@ ${user.getUser().login}
     <a class="playlist" href="/${user.getUser().login}/playlists/${playlist.id()}">${playlist.name()}</a>
 </#list>
 
+<form action="/${user.getUser().login}/playlists" method="post"
+      class="form-horizontal">
+    <input type="text" id="name" name="name" placeholder="name">
+    <p><input type="submit" value="create playlist"></p>
+</form>
 
 </body>
 </html>

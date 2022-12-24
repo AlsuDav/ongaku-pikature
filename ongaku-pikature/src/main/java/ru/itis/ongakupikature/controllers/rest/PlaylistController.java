@@ -16,11 +16,11 @@ public class PlaylistController {
 
     private final PlaylistService playlistService;
 
-    @PostMapping("/{login}/playlists")
+    @PostMapping("/rest/{login}/playlists")
     public ResponseEntity<Void> createUserPlaylist(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable String login,
-            @RequestParam String name
+            @RequestBody String name
     ) {
         var result = playlistService.createUserPlaylist(userDetails.getUser(), name);
         if (result instanceof ActionResult.Success) {
@@ -57,7 +57,7 @@ public class PlaylistController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PostMapping("/{login}/playlists/{id}")
+    @PostMapping("/rest/{login}/playlists/{id}")
     public ResponseEntity<Void> addPlaylistMusic(
             Authentication authentication,
             @PathVariable String login,

@@ -115,7 +115,7 @@ class PlaylistControllerTest extends BaseControllerTest {
     void createPlaylist_error() throws Exception {
         given(playlistService.createUserPlaylist(any(), any())).willReturn(new ActionResult.Error());
 
-        var result = mvc.perform(post("/login/playlists")
+        var result = mvc.perform(post("/rest/login/playlists")
                 .param("name", "new_playlist"));
 
         checkStatusBadRequest(result);
@@ -187,7 +187,7 @@ class PlaylistControllerTest extends BaseControllerTest {
     void addSongToPlaylist_success() throws Exception {
         given(playlistService.addSongToPlaylist(any(), any(), any())).willReturn(new ActionResult.Success());
 
-        var result = mvc.perform(post("/login/playlists/1")
+        var result = mvc.perform(post("/rest/login/playlists/1")
                 .param("musicId", "1"));
 
         checkStatusOk(result);
@@ -202,7 +202,7 @@ class PlaylistControllerTest extends BaseControllerTest {
     void addSongToPlaylist_error() throws Exception {
         given(playlistService.addSongToPlaylist(any(), any(), any())).willReturn(new ActionResult.Error());
 
-        var result = mvc.perform(post("/login/playlists/1")
+        var result = mvc.perform(post("/rest/login/playlists/1")
                 .param("musicId", "1"));
 
         checkStatusBadRequest(result);

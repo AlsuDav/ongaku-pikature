@@ -100,6 +100,49 @@
     });
 </script>
 
+<script>
+    $(document).on('click', '.delete', function (event) {
+
+        musicId = $(this).attr('musicId');
+        var req = getXmlHttp()
+
+        // (2)
+        // span рядом с кнопкой
+        // в нем будем отображать ход выполнения
+        var x = document.getElementById('vote_favourite_status')
+
+
+        // (3) задать адрес подключения
+        req.open('DELETE', '/${login}/playlists/${playlistInfo.id()}/' + musicId, true);
+
+        // объект запроса подготовлен: указан адрес и создана функция onreadystatechange
+        // для обработки ответа сервера
+
+        // (4)
+        req.send(null);  // отослать запрос
+
+
+        req.onreadystatechange = function () {
+            // onreadystatechange активируется при получении ответа сервера
+
+            if (req.readyState === 4) {
+                // если запрос закончил выполняться
+
+
+                if (req.status === 200) {
+                    // если статус 200 (ОК) - выдать ответ пользователю
+                    alert("Песня " + music_name[musicId] + " удалена из избранного");
+                    event.target.disabled= true
+
+                } else {
+                    alert("Извините, произошла ошибка");
+                }
+            }
+        }
+
+    });
+</script>
+
 <body>
 <button onclick="openNav()">
     <#--    <img class="profile_menu" src="pokeball.png"/>-->
@@ -172,7 +215,7 @@ ${user.getUser().login}
         document.write('<button class="like"' + style + ' data-id=' + ${music.id()} + '>like</button>')
     </script>
 <#else>
-    это другой плейлист: здесь будет удаление песенки
+    <button class="delete" musicId=${music.id()}>delete</button>
 </#if>
 </#list>
 
@@ -229,7 +272,8 @@ ${user.getUser().login}
 <#--    </div>-->
 <#--</div>-->
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+<script src=" https:
+//cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
         integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"

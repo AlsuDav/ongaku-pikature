@@ -1,11 +1,12 @@
 package ru.itis.ongakupikature.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
+import ru.itis.ongakupikature.dto.ActionResult;
 import ru.itis.ongakupikature.dto.MusicDto;
 import ru.itis.ongakupikature.security.UserDetailsImpl;
 import ru.itis.ongakupikature.service.MusicService;
@@ -44,5 +45,35 @@ public class PlaylistControllerPage {
         var favouriteMusic = musicService.getPlaylistMusic(user.getUser().getFavoritePlaylistId());
         model.addAttribute("favouriteMusicIds", favouriteMusic.stream().map(MusicDto::id).toList());
         return "playlist";
+    }
+
+    @PostMapping("/{login}/playlists")
+    public String createUserPlaylist(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable String login,
+            String name
+    ) {
+        var result = playlistService.createUserPlaylist(userDetails.getUser(), name);
+        if (result instanceof ActionResult.Success) {
+            return "redirect:/" + login + "/playlists";
+        }
+        return "redirect:/" + login + "/playlists";
+    }
+
+    @RequestMapping(
+            value = "/{login}/playlists/{id}",
+            method = RequestMethod.POST
+
+    )
+    public String addPlaylistMusic(
+            Authentication authentication,
+            @PathVariable String login,
+            @PathVariable("id") Long musicId,
+            Long playlistsId
+    ) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        playlistService.addSongToPlaylist(userDetails.getUser(), playlistsId, musicId);
+
+        return "redirect:/" + login + "/playlists/" + playlistsId;
     }
 }
