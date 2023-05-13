@@ -21,7 +21,7 @@ jobs:
       - name: Maven Package
         run: |
           ls /home/runner/work/ongaku-pikature/ongaku-pikature
-          mvn -f /home/runner/work/ongaku-pikature/ongaku-pikature/ongaku-pikature/pom.xml -B -X clean compile package -DskipTests
+          mvn -f /home/runner/work/ongaku-pikature/ongaku-pikature/ongaku-pikature/pom.xml -B clean compile package -DskipTests
           echo build project!
           
   test-ongaku:
