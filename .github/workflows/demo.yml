@@ -50,6 +50,12 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '17'
+      - name: Install docker 
+        run: |
+          sudo apt update
+          sudo apt install docker.io
+          sudo systemctl start docker
+          sudo systemctl enable docker
       - name: Start PostgreSQL
         run: docker start postgres
       - name: Maven Verify
