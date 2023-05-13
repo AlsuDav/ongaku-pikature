@@ -20,7 +20,7 @@ jobs:
           java-version: 1.17
       - name: Maven Package
         run: |
-          mvn -B clean compile package -DskipTests
+          mvn -B -X clean compile package -DskipTests
           echo build project!
           
   test-ongaku:
