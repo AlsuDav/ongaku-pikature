@@ -14,10 +14,10 @@ jobs:
   build-ongaku:
     runs-on: ubuntu-latest
     steps:
-      - name: set up JDK 11
+      - name: set up JDK 17
         uses: actions/checkout@v3
         with:
-          java-version: '11'
+          java-version: '17'
       - name: Maven Package
         run: |
           ls /home/runner/work/ongaku-pikature/ongaku-pikature
