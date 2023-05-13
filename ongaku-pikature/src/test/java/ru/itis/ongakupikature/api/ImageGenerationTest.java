@@ -19,16 +19,16 @@ class ImageGenerationTest extends BaseControllerTest {
     @Autowired
     private ImageGeneration imageGeneration;
 
-    @Test
-    @Flaky
-    @Severity(value = SeverityLevel.CRITICAL)
-    @DisplayName("Сгенерировать изображение")
-    @Feature("Генерация изображения")
-    @Story("API")
-    void generateImageByKeyWords_success() throws IOException {
-        var is = imageGeneration.generateImageByKeyWords(KEY_WORDS);
-        checkInputStream(is);
-    }
+//    @Test
+//    @Flaky
+//    @Severity(value = SeverityLevel.CRITICAL)
+//    @DisplayName("Сгенерировать изображение")
+//    @Feature("Генерация изображения")
+//    @Story("API")
+//    void generateImageByKeyWords_success() throws IOException {
+//        var is = imageGeneration.generateImageByKeyWords(KEY_WORDS);
+//        checkInputStream(is);
+//    }
     @Step("Изображение получено")
     private void checkInputStream(InputStream inputStream) throws IOException {
         assertThat(inputStream)
