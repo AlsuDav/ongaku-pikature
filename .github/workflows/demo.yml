@@ -54,6 +54,7 @@ jobs:
         run: |
           sudo netstat -tulpn
           docker run -p 5555:5555 --name ongaku_db -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgresql -e POSTGRES_DB=ongaku_db -d postgres:13.3
+          docker ps
       - name: Set up Java 17
         uses: actions/setup-java@v3
         with:
