@@ -50,20 +50,19 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '17'
-      - name: Install docker 
+      - name: Install psql
         run: |
           sudo apt update
-          sudo apt install docker.io
-          sudo systemctl start docker
-          sudo systemctl enable docker
-      - name: Start PostgreSQL
-        run: docker start postgres
+          sudo apt install postgresql-client -y
+      - name: Create PostgreSQL database
+        run: |
+          export PGPASSWORD=postgresql
+          psql -h localhost -p 5432 -U postgresql -c "CREATE DATABASE ongaku_db OWNER postgresql;"
+      
       - name: Maven Verify
         run: mvn -f /home/runner/work/ongaku-pikature/ongaku-pikature/ongaku-pikature/pom.xml -B clean verify
       - name: Test Coverage
         uses: codecov/codecov-action@v1
-      - name: Stop PostgreSQL
-        run: docker stop postgres
       
 
     
