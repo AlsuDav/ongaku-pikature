@@ -17,7 +17,7 @@ jobs:
       - name: set up JDK 17
         uses: actions/checkout@v3
         with:
-          java-version: 1.17
+          java-version: '17'
       - name: Maven Package
         run: |
           ls /home/runner/work/ongaku-pikature/ongaku-pikature
